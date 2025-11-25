@@ -1,16 +1,25 @@
 package com.example.marketplace.controller;
 
 
+import com.example.marketplace.dto.request.ServiceRequestDTO;
+import com.example.marketplace.dto.response.ServiceResponseDTO;
+import com.example.marketplace.service.interfaces.ServiceForServiceInterface;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins="http://localhost:8000")
 @RestController
 @RequestMapping("/api/service")
 public class Service {
+
+    @Autowired
+    ServiceForServiceInterface service;
 
     @Operation(
             summary = "Return all services",
@@ -24,8 +33,8 @@ public class Service {
             }
     )
     @GetMapping("")
-    public void getAllServices(){
-
+    public ResponseEntity getAllServices(){
+        return ResponseEntity.ok(service.getAll());
     }
 
 
@@ -46,8 +55,13 @@ public class Service {
             }
     )
     @GetMapping("/{id}")
-    public void getServiceById(){
+    public ResponseEntity getServiceById(@PathVariable int id){
+        ServiceResponseDTO dto=service.getById(id);
 
+        if(dto==null)
+            return ResponseEntity.notFound().build();
+        else
+            return ResponseEntity.ok(dto);
     }
 
     @Operation(
@@ -67,7 +81,12 @@ public class Service {
             }
     )
     @PostMapping("")
-    public void createService(){
+    public ResponseEntity createService(@RequestBody @Valid ServiceRequestDTO dto){
+        ServiceResponseDTO responseDTO=service.save(dto);
 
+        if(responseDTO==null)
+            return ResponseEntity.status(401).build();
+        else
+            return ResponseEntity.ok().build();
     }
 }

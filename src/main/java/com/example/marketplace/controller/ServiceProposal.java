@@ -8,5 +8,5 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins="http://localhost:8000")
 @RestController
 @RequestMapping("/api/service-proposal")
-public class ServiceProposa {
+public class ServiceProposal {
 }

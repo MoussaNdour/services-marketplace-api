@@ -18,6 +18,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.authentication.AuthenticationManager;
+import com.example.marketplace.service.JwtService;
 
 @RestController
 @CrossOrigin(origins="http://localhost:8000")
@@ -29,6 +30,9 @@ public class Auth {
 
     @Autowired
     AuthServiceInterface service;
+
+    @Autowired
+    JwtService jwtService;
 
     @Operation(
             summary = "Authenticate a user",
@@ -54,7 +58,7 @@ public class Auth {
             UserDetails user1 = (UserDetails) authentication.getPrincipal();
 
             // Tu peux retourner un JWT, ou des infos basiques
-            return ResponseEntity.ok("Authentificated : " + user1.getUsername());
+            return ResponseEntity.ok("token: " + jwtService.generateToken(user1.getUsername(),"ADMIN"));
 
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
