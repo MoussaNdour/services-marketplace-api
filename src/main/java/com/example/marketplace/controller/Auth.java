@@ -154,27 +154,21 @@ public class Auth {
         switch (request.role.name()) {
             case "ADMIN" -> {
                 AdminResponseDTO admin = service.registerAdmin((AdminRequestDTO) request);
-                if(admin==null)
-                    return ResponseEntity.status(HttpStatus.CONFLICT).build();
-                else{
-                    return ResponseEntity.ok(admin);
-                }
+
+                return ResponseEntity.ok(admin);
+
             }
             case "CLIENT" -> {
                 ClientResponseDTO client = service.registerClient((ClientRequestDTO) request);
-                if(client==null)
-                    return ResponseEntity.status(HttpStatus.CONFLICT).build();
-                else{
-                    return ResponseEntity.ok(client);
-                }
+
+                return ResponseEntity.ok(client);
+
             }
             case "PROVIDER" -> {
                 ProviderRespoonseDTO provider = service.registerProvider((ProviderRequestDTO) request);
-                if(provider==null)
-                    return ResponseEntity.status(HttpStatus.CONFLICT).build();
-                else{
-                    return ResponseEntity.ok(provider);
-                }
+
+                return ResponseEntity.ok(provider);
+
             }
             default -> {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unknown role");

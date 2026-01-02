@@ -11,6 +11,7 @@ import com.example.marketplace.entity.Admin;
 import com.example.marketplace.entity.Client;
 import com.example.marketplace.entity.Provider;
 import com.example.marketplace.entity.User;
+import com.example.marketplace.exception.EmailAlreadyUserException;
 import com.example.marketplace.mapper.request.AdminRequestMapper;
 import com.example.marketplace.mapper.request.ClientRequestMapper;
 import com.example.marketplace.mapper.request.ProviderRequestMapper;
@@ -101,7 +102,7 @@ public class AuthService implements AuthServiceInterface {
     @Override
     public ClientResponseDTO registerClient(ClientRequestDTO client) {
         if(!isEmailFree(client.getEmail()))
-            return null;
+            throw new EmailAlreadyUserException("There is already an account with this email.");
         else{
             User user=new User();
             user.setRole("CLIENT");
@@ -128,7 +129,7 @@ public class AuthService implements AuthServiceInterface {
     @Override
     public ProviderRespoonseDTO registerProvider(ProviderRequestDTO provider) {
         if(!isEmailFree((provider.getEmail())))
-            return null;
+            throw new EmailAlreadyUserException("There is already an account with this email.");
         else{
             User user=new User();
             user.setRole("PROVIDER");
@@ -155,7 +156,7 @@ public class AuthService implements AuthServiceInterface {
     @Override
     public AdminResponseDTO registerAdmin(AdminRequestDTO admin) {
         if(!isEmailFree(admin.getEmail()))
-            return null;
+            throw new EmailAlreadyUserException("There is already an account with this email.");
         else{
             User user=new User();
             user.setRole("ADMIN");
