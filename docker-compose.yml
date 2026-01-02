@@ -1,0 +1,29 @@
+services:
+
+  app:
+    build: .
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    networks:
+      - my-network
+
+  postgres:
+    image: 'postgres:15'
+    container_name: memoire-db
+    environment:
+      - 'POSTGRES_DB=marketplace'
+      - 'POSTGRES_PASSWORD=20010831A'
+      - 'POSTGRES_USER=moussandour01'
+      - 'PGDATA:/data/postgres'
+
+    ports:
+      - "5432:5432"
+    networks:
+      - my-network
+
+
+networks:
+  my-network:
+    driver: bridge

@@ -1,13 +1,31 @@
 package com.example.marketplace.service.interfaces;
 
-import com.example.marketplace.dto.request.Login;
-import com.example.marketplace.dto.request.UserRequest;
+import com.example.marketplace.dto.request.AdminRequestDTO;
+import com.example.marketplace.dto.request.ClientRequestDTO;
+import com.example.marketplace.dto.request.ProviderRequestDTO;
+import com.example.marketplace.dto.response.AdminResponseDTO;
+import com.example.marketplace.dto.response.ClientResponseDTO;
+import com.example.marketplace.dto.response.ProviderRespoonseDTO;
+import com.example.marketplace.dto.response.UserResponseDTO;
+import com.example.marketplace.entity.User;
+
+import java.util.List;
 
 public interface AuthServiceInterface {
 
-    void login(Login user);
+    boolean isEmailFree(String email);
 
-    void registerUser(UserRequest user);
+    ClientResponseDTO registerClient(ClientRequestDTO client);
 
-    boolean checkUserEmail(String email);
+    ProviderRespoonseDTO registerProvider(ProviderRequestDTO provider);
+
+    AdminResponseDTO registerAdmin(AdminRequestDTO admin);
+
+    ClientResponseDTO findClient(String email);
+
+    ProviderRespoonseDTO findProvider(String email);
+
+    AdminResponseDTO findAdmin(String email);
+
+    List<UserResponseDTO> getAllUsers();
 }

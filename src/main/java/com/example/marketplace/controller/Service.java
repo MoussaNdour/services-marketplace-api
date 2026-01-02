@@ -8,10 +8,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @CrossOrigin(origins="http://localhost:8000")
 @RestController
@@ -21,8 +26,10 @@ public class Service {
     @Autowired
     ServiceForServiceInterface service;
 
+
     @Operation(
             summary = "Return all services",
+            security = { @SecurityRequirement(name= "bearerAuth")},
             description = "Retrieve all services from the database and return them to the user as a list of services that can be blank.",
             responses = {
                     @ApiResponse(
@@ -40,6 +47,7 @@ public class Service {
 
     @Operation(
             summary = "retrieve service by his id",
+            security = { @SecurityRequirement(name = "bearerAuth") },
             description = "Check if the service exist in the database by using his id and return it, if it exist.",
             responses = {
                     @ApiResponse(
@@ -66,6 +74,7 @@ public class Service {
 
     @Operation(
             summary = "Create a service",
+            security = { @SecurityRequirement(name = "bearerAuth") },
             description = "Create a service by using datas sent in the body of the request",
             responses = {
                     @ApiResponse(
@@ -84,9 +93,15 @@ public class Service {
     public ResponseEntity createService(@RequestBody @Valid ServiceRequestDTO dto){
         ServiceResponseDTO responseDTO=service.save(dto);
 
+        Map<String,Object> response=new HashMap<>();
+
         if(responseDTO==null)
             return ResponseEntity.status(401).build();
         else
-            return ResponseEntity.ok().build();
+        {
+            response.put("service",responseDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
+
     }
 }
