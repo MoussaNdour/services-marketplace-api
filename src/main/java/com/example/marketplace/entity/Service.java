@@ -25,8 +25,18 @@ public class Service {
     @Column(name= "createdAt")
     private Date createdAt=new Date();
 
+    @Column(name = "mark")
+    private double mark;
+
+    @Column(name = "description")
+    private String description;
+
     @ManyToOne
     @JoinColumn(name= "category",referencedColumnName = "id")
     private Category category;
+
+    @OneToOne
+    @JoinColumn(name = "image_id", referencedColumnName = "id")
+    private Image image;
 
 }

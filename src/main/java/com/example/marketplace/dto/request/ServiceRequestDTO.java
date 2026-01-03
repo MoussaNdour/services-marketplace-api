@@ -23,4 +23,7 @@ public class ServiceRequestDTO {
 
     @NotNull
     private Integer idcategory;
+
+
+    private String description;
 }

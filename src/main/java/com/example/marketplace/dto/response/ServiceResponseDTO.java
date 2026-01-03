@@ -21,4 +21,8 @@ public class ServiceResponseDTO {
 
 
     private String category;
+
+    private String description;
+
+    private double mark;
 }
