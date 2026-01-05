@@ -1,5 +1,6 @@
 package com.example.marketplace.exception;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -46,5 +47,17 @@ public class GlobalExceptionHandler {
         Map<String,String> error=new HashMap<>();
         error.put("error",e.getMessage());
         return new ResponseEntity<>(error,HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NonexistingImageException.class)
+    public ResponseEntity<String> handleNonexistingImageException(NonexistingImageException e){
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(ImageManipulationException.class)
+    public ResponseEntity<String> handleImageManipulationException(ImageManipulationException e)
+    {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
 }

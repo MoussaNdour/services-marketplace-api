@@ -1,20 +1,15 @@
 package com.example.marketplace.controller;
 
+import com.example.marketplace.entity.Image;
+import com.example.marketplace.service.interfaces.ImageServiceInterface;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+
 
 @RestController
 @RequestMapping("/api/uploads")
@@ -23,46 +18,31 @@ public class ImageUploadController {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
-    @PostMapping(value="/images",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
-        try {
-            // Save the file to the directory
-            String filePath = saveImage(file);
-            return ResponseEntity.ok("Image uploaded successfully: " + filePath);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading image");
-        }
+    @Autowired
+    ImageServiceInterface service;
+
+    @GetMapping("/image")
+    public ResponseEntity getAllImages(){
+        return ResponseEntity.ok(service.getAll());
     }
 
-    private String saveImage(MultipartFile file) throws IOException {
-        Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
+    @PostMapping(value="/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Image> uploadImage(@RequestParam("file") MultipartFile file) {
+        // Save the file to the directory
+        Image image = service.save(file);
 
-        String fileName = file.getOriginalFilename();
+        return ResponseEntity.ok(image);
 
-        Path filePath = uploadPath.resolve(fileName);
-        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-        return filePath.toString();
     }
 
-    @GetMapping("/images/{filename}")
-    public ResponseEntity<Resource> getImage(@PathVariable String filename) {
-        try {
-            Path filePath = Paths.get(uploadDir).resolve(filename);
-            Resource resource = new UrlResource(filePath.toUri());
+    @DeleteMapping("/image/{id}")
+    private ResponseEntity<String> deleteImage(@PathVariable int id){
+        service.deleteById(id);
 
-            if (resource.exists()) {
-                return ResponseEntity.ok()
-                        .contentType(MediaType.IMAGE_JPEG)
-                        .body(resource);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (MalformedURLException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return ResponseEntity.ok("Image successfully deleted");
     }
+
+
+
+
 }

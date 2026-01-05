@@ -32,22 +32,5 @@ public class Image {
     @Column(name = "name")
     private String name;
 
-    @Value("${file.upload-dir}")
-    private String uploadDir;
 
-    public Resource getImage(){
-
-        try {
-            Path filePath = Paths.get(uploadDir).resolve(name);
-            Resource resource = new UrlResource(filePath.toUri());
-
-            if (resource.exists()) {
-                return resource;
-            } else {
-                return null;
-            }
-        } catch (MalformedURLException e) {
-            return null;
-        }
-    }
 }
