@@ -2,8 +2,10 @@ package com.example.marketplace.service.implementations;
 
 import com.example.marketplace.dto.request.ServiceRequestDTO;
 import com.example.marketplace.dto.response.ServiceResponseDTO;
+import com.example.marketplace.exception.NonexistingImageException;
 import com.example.marketplace.mapper.request.ServiceRequestMapper;
 import com.example.marketplace.mapper.response.ServiceResponseMapper;
+import com.example.marketplace.repository.ImageRepository;
 import com.example.marketplace.repository.ServiceRepository;
 import com.example.marketplace.service.interfaces.ServiceForServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +26,16 @@ public class ServiceForService implements ServiceForServiceInterface {
     @Autowired
     ServiceResponseMapper responseMapper;
 
+    @Autowired
+    ImageRepository imageRepository;
+
     @Override
     public ServiceResponseDTO save(ServiceRequestDTO dto) {
+
+        imageRepository.findById(dto.getIdImage()).orElseThrow(()->new NonexistingImageException("Image not existing for the id " + dto.getIdImage()));
+
         com.example.marketplace.entity.Service service=repos.save(requestMapper.toEntity(dto));
+
 
         if(service==null)
             return null;

@@ -5,14 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 
-
-import java.net.MalformedURLException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Entity
 @Table(name = "image")

@@ -26,7 +26,7 @@ public class Service {
     private Date createdAt=new Date();
 
     @Column(name = "mark")
-    private double mark;
+    private Double mark;
 
     @Column(name = "description")
     private String description;
