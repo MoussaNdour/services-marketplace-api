@@ -1,5 +1,6 @@
 package com.example.marketplace.repository;
 
+import com.example.marketplace.entity.Provider;
 import com.example.marketplace.entity.ServiceProposal;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -17,4 +18,10 @@ public interface ServiceProposalRepository extends CrudRepository<ServiceProposa
     Iterable<ServiceProposal> getServiceProposalsByIdProvider(
             @Param("idprovider") int idprovider
     );
+
+    @Query(
+            value = "SELECT * from provider where id IN (SELECT provider FROM serviceProposal WHERE service = :serviceid)",
+            nativeQuery = true
+    )
+    Iterable<Provider> getProvidersByServiceId(@Param("serviceid") int serviceid);
 }

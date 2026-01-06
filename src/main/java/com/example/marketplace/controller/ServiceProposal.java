@@ -73,26 +73,6 @@ public class ServiceProposal {
     }
 
 
-
-
-    @Operation(
-            summary = "",
-            security = { @SecurityRequirement(name = "bearerAuth") },
-            description = "",
-            responses = {
-
-            }
-    )
-//    @PreAuthorize("hasAnyRole('PROVIDER', 'ADMIN')")
-    @GetMapping("/provider")
-    public ResponseEntity getServicesProposalsByProviderId(@RequestParam int providerId)
-    {
-        return ResponseEntity.ok(service.getServicesProposalByIdProvider(providerId));
-    }
-
-
-
-
     @Operation(
             summary = "",
             security = { @SecurityRequirement(name = "bearerAuth") },

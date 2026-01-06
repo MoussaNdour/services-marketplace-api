@@ -10,4 +10,5 @@ public interface ServiceProposalServiceInterface extends GeneralInterface<Servic
     Provider checkProvider(String email);
     void saveServiceProposal(ServiceProposalRequestDTO dto, User user);
     List<ServiceProposalResponseDTO> getServicesProposalByIdProvider(int idprovider);
+    List<Provider> getProvidersByServiceId(int serviceid);
 }

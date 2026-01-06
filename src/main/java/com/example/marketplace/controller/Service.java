@@ -104,4 +104,25 @@ public class Service {
         }
 
     }
+
+    @Operation(
+            summary = "Retrieve Providers providing an specific service",
+            description = "",
+            security = {@SecurityRequirement(name = "bearerAuth")},
+            responses = {
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = ""
+                    ),
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = ""
+                    )
+            }
+    )
+    @GetMapping("/{serviceId}/providers")
+    public ResponseEntity getProviderByServiceId(@PathVariable int serviceId){
+
+        return ResponseEntity.ok(service.getProvidersByServiceId(serviceId));
+    }
 }

@@ -27,4 +27,6 @@ public class ServiceResponseDTO {
     private double mark;
 
     private String imagePath;
+
+    private double price;
 }

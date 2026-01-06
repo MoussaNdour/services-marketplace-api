@@ -120,4 +120,15 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
         return serviceProposals;
     }
 
+    @Override
+    public List<Provider> getProvidersByServiceId(int serviceid) {
+        List<Provider> providers=new ArrayList<>();
+
+        for(Provider provider:repository.getProvidersByServiceId(serviceid)){
+            providers.add(provider);
+        }
+
+        return providers;
+    }
+
 }
