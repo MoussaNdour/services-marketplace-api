@@ -25,4 +25,6 @@ public class ServiceResponseDTO {
     private String description;
 
     private double mark;
+
+    private String imagePath;
 }

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -34,8 +35,10 @@ public class ServiceForService implements ServiceForServiceInterface {
 
         imageRepository.findById(dto.getIdImage()).orElseThrow(()->new NonexistingImageException("Image not existing for the id " + dto.getIdImage()));
 
-        com.example.marketplace.entity.Service service=repos.save(requestMapper.toEntity(dto));
 
+        com.example.marketplace.entity.Service service=requestMapper.toEntity(dto);
+        service.setCreatedAt(new Date());
+        service=repos.save(service);
 
         if(service==null)
             return null;

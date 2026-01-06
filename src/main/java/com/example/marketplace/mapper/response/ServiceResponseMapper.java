@@ -11,5 +11,6 @@ import org.mapstruct.Mapping;
 public interface ServiceResponseMapper {
 
     @Mapping(source = "category.name", target = "category")
+    @Mapping(source = "image.path", target = "imagePath")
     ServiceResponseDTO toDTO(Service service);
 }
