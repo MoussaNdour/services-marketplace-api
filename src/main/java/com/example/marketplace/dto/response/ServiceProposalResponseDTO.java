@@ -18,4 +18,6 @@ public class ServiceProposalResponseDTO {
     private String providerFirstName;
 
     private String providerLastName;
+
+    private double price;
 }

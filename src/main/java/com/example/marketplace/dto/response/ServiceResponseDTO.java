@@ -13,12 +13,9 @@ public class ServiceResponseDTO {
 
     private int id;
 
-
     private String name;
 
-
     private Date createdAt;
-
 
     private String category;
 
@@ -28,5 +25,5 @@ public class ServiceResponseDTO {
 
     private String imagePath;
 
-    private double price;
+
 }

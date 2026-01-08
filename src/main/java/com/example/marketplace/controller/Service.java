@@ -106,23 +106,22 @@ public class Service {
     }
 
     @Operation(
-            summary = "Retrieve Providers providing an specific service",
-            description = "",
+            summary = "Retrieve all Providers providing an specific service",
+            description = "This endpoint allow to retrieve all providers providing an specific service by using the id of the service",
             security = {@SecurityRequirement(name = "bearerAuth")},
             responses = {
                     @ApiResponse(
                             responseCode = "404",
-                            description = ""
+                            description = "No service owning this id"
                     ),
                     @ApiResponse(
                             responseCode = "200",
-                            description = ""
+                            description = "retrieved all providers in a list even if there is no provider, you gonna get a blank list"
                     )
             }
     )
     @GetMapping("/{serviceId}/providers")
     public ResponseEntity getProviderByServiceId(@PathVariable int serviceId){
-
         return ResponseEntity.ok(service.getProvidersByServiceId(serviceId));
     }
 }

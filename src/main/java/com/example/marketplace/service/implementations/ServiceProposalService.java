@@ -87,15 +87,9 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
 
     @Override
     public void saveServiceProposal(ServiceProposalRequestDTO dto, User user) {
-        System.out.println(user.getEmail());
-        Provider provider=checkProvider(user.getEmail());
+        if(user.getRole().equals("PROVIDER")){
+            Provider provider=checkProvider(user.getEmail());
 
-
-        if(provider==null)
-        {
-            throw new ProviderNotFoundException("Provider profile not existing or not completed");
-        }
-        else{
             if(dto.getIdprovider()!=provider.getId()){
                 throw new ForbiddenOperationException("Forbidden Operation");
             }
@@ -103,8 +97,11 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
                 Service service=serviceRepository.findById(dto.getIdservice()).orElseThrow(
                         ()->new ServiceNotFoundException("Requested Service has not been founded")
                 );
-                repository.save(requestMapper.toEntity(dto));
+                save(dto);
             }
+        }
+        else{
+            save(dto);
         }
     }
 
