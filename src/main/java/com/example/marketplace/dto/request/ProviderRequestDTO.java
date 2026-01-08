@@ -3,6 +3,7 @@ package com.example.marketplace.dto.request;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,4 +32,9 @@ public class ProviderRequestDTO extends RegistrationRequest{
     @NotBlank
     private String password;
 
+    @NotBlank
+    private String description;
+
+    @NotNull
+    private Integer yearsOfExperience;
 }

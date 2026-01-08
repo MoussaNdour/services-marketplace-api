@@ -146,6 +146,16 @@ public class AuthService implements AuthServiceInterface {
             Provider providerEntity=providerRequestMapper.toEntity(provider);
             providerEntity.setUser(user);
 
+            if(providerEntity.getYearsOfExperience()<3)
+                providerEntity.setLevel("JUNIOR");
+            else if(providerEntity.getYearsOfExperience()<5)
+            {
+                providerEntity.setLevel("MEDIUM");
+            }
+            else{
+                providerEntity.setLevel("SENIOR");
+            }
+
             Provider savedEntiy=providerRepository.save(providerEntity);
 
             return providerResponseMapper.toDTO(savedEntiy);

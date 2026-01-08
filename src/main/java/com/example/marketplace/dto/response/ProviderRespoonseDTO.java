@@ -31,4 +31,10 @@ public class ProviderRespoonseDTO {
 
     private String password;
 
+    private String description;
+
+    private String level;
+
+    private int yearsOfExperience;
+
 }

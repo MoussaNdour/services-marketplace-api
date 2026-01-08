@@ -25,6 +25,16 @@ public class Provider {
     @Column(name = "profession")
     private String profession;
 
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "level")
+    private String level;
+
+    @Column(name = "yearsOfExperience")
+    private int yearsOfExperience;
+
+
     @OneToOne
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private User user;
