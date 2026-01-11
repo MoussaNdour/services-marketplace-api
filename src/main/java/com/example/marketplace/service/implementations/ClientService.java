@@ -3,6 +3,7 @@ package com.example.marketplace.service.implementations;
 import com.example.marketplace.dto.request.ClientRequestDTO;
 import com.example.marketplace.dto.response.ClientResponseDTO;
 import com.example.marketplace.entity.Client;
+import com.example.marketplace.exception.ClientNotFoundException;
 import com.example.marketplace.mapper.request.ClientRequestMapper;
 import com.example.marketplace.mapper.response.ClientResponseMapper;
 import com.example.marketplace.repository.ClientRepository;
@@ -37,7 +38,10 @@ public class ClientService implements ClientServiceInterface {
 
     @Override
     public ClientResponseDTO getById(int id) {
-        return null;
+        Client client=repository.findById(id).orElseThrow(()->new ClientNotFoundException("Client not found for this id"));
+
+
+        return responseMapper.toDTO(client);
     }
 
 
