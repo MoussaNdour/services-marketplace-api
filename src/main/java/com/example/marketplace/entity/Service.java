@@ -4,6 +4,8 @@ import java.util.Date;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.math.BigDecimal;
+
 
 @Entity
 @NoArgsConstructor
@@ -25,8 +27,8 @@ public class Service {
     @Column(name= "createdAt")
     private Date createdAt=new Date();
 
-    @Column(name = "mark")
-    private Double mark;
+    @Column(name = "mark", precision = 3, scale = 2)
+    private BigDecimal mark;
 
     @Column(name = "description")
     private String description;

@@ -3,6 +3,7 @@ package com.example.marketplace.service.implementations;
 import com.example.marketplace.dto.request.ProviderRequestDTO;
 import com.example.marketplace.dto.response.ProviderRespoonseDTO;
 import com.example.marketplace.entity.Provider;
+import com.example.marketplace.exception.ProviderNotFoundException;
 import com.example.marketplace.mapper.request.ProviderRequestMapper;
 import com.example.marketplace.mapper.response.ProviderResponseMapper;
 import com.example.marketplace.repository.ProviderRepository;
@@ -10,6 +11,7 @@ import com.example.marketplace.service.interfaces.ProviderServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,12 +33,24 @@ public class ProviderService implements ProviderServiceInterface {
 
     @Override
     public List<ProviderRespoonseDTO> getAll() {
-        return List.of();
+        List<ProviderRespoonseDTO> providers=new ArrayList<>();
+
+        for(Provider provider:repository.findAll()){
+
+            providers.add(responseMapper.toDTO(provider));
+        }
+
+        return providers;
     }
 
     @Override
     public ProviderRespoonseDTO getById(int id) {
-        return null;
+
+        Provider provider=repository.findById(id).orElseThrow(
+                ()->new ProviderNotFoundException("Provider not found for this id")
+        );
+
+        return responseMapper.toDTO(provider);
     }
 
     @Override
