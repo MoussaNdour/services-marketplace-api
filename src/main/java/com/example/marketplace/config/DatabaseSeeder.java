@@ -33,7 +33,6 @@ public class DatabaseSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) {
         if (userRepository.count() > 0) {
-            System.out.println("La base de données contient déjà des données. Seeding ignoré.");
             return;
         }
 

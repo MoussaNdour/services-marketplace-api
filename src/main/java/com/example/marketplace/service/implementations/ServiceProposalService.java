@@ -1,6 +1,7 @@
 package com.example.marketplace.service.implementations;
 
 import com.example.marketplace.dto.request.ServiceProposalRequestDTO;
+import com.example.marketplace.dto.response.ProviderRespoonseDTO;
 import com.example.marketplace.dto.response.ServiceProposalResponseDTO;
 import com.example.marketplace.entity.Provider;
 import com.example.marketplace.entity.Service;
@@ -9,11 +10,13 @@ import com.example.marketplace.entity.User;
 import com.example.marketplace.exception.ForbiddenOperationException;
 import com.example.marketplace.exception.ProviderNotFoundException;
 import com.example.marketplace.exception.ServiceNotFoundException;
+import com.example.marketplace.exception.ServiceProposalNotFoundException;
 import com.example.marketplace.mapper.request.ServiceProposalRequestMapper;
 import com.example.marketplace.mapper.response.ServiceProposalResponseMapper;
 import com.example.marketplace.repository.ProviderRepository;
 import com.example.marketplace.repository.ServiceProposalRepository;
 import com.example.marketplace.repository.ServiceRepository;
+import com.example.marketplace.service.interfaces.ProviderServiceInterface;
 import com.example.marketplace.service.interfaces.ServiceProposalServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,6 +40,9 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
 
     @Autowired
     ServiceProposalResponseMapper responseMapper;
+
+    @Autowired
+    ProviderServiceInterface providerService;
 
     @Override
     public ServiceProposalResponseDTO save(ServiceProposalRequestDTO dto) {
@@ -80,15 +86,12 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
         repository.deleteById(id);
     }
 
-    @Override
-    public Provider checkProvider(String email) {
-        return providerRepository.findByUserEmail(email).orElse(null);
-    }
+
 
     @Override
     public void saveServiceProposal(ServiceProposalRequestDTO dto, User user) {
         if(user.getRole().equals("PROVIDER")){
-            Provider provider=checkProvider(user.getEmail());
+            ProviderRespoonseDTO provider=providerService.getByEmail(user.getEmail());
 
             if(dto.getIdprovider()!=provider.getId()){
                 throw new ForbiddenOperationException("Forbidden Operation");
@@ -126,6 +129,15 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
         }
 
         return providers;
+    }
+
+    @Override
+    public ServiceProposalResponseDTO getServiceProposalByServiceIdAndProviderId(int serviceid, int providerid) {
+        ServiceProposal serviceProposal=repository.getServiceProposalByServiceIdAndProviderId(serviceid,providerid).orElseThrow(
+                ()->new ServiceProposalNotFoundException("Service proposal not found")
+        );
+
+        return responseMapper.toDTO(serviceProposal);
     }
 
 }

@@ -70,8 +70,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ClientNotFoundException.class)
     public ResponseEntity<String> handleClientNotFoundException(ClientNotFoundException e){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
 
-
+    @ExceptionHandler(ServiceProposalNotFoundException.class)
+    public ResponseEntity<String> handleServiceProposalNotFoundException(ServiceProposalNotFoundException e){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 }

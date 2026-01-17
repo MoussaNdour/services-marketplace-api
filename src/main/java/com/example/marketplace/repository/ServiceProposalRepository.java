@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface ServiceProposalRepository extends CrudRepository<ServiceProposal,Integer> {
@@ -24,4 +25,11 @@ public interface ServiceProposalRepository extends CrudRepository<ServiceProposa
             nativeQuery = true
     )
     Iterable<Provider> getProvidersByServiceId(@Param("serviceid") int serviceid);
+
+
+    @Query(
+            value = "SELECT * from serviceProposal WHERE provider =:idprovider and service =:idservice",
+            nativeQuery = true
+    )
+    Optional<ServiceProposal> getServiceProposalByServiceIdAndProviderId(@Param("idservice") int idservice, @Param("idprovider") int idprovider);
 }

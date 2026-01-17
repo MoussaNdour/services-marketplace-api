@@ -121,7 +121,7 @@ public class Service {
             }
     )
     @GetMapping("/{serviceId}/providers")
-    public ResponseEntity getProviderByServiceId(@PathVariable int serviceId){
+    public ResponseEntity getProvidersByServiceId(@PathVariable int serviceId){
         return ResponseEntity.ok(service.getProvidersByServiceId(serviceId));
     }
 }

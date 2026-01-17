@@ -23,7 +23,6 @@ public class ServiceProposal {
     @Column(name = "price")
     private double price;
 
-
     @ManyToOne
     @JoinColumn(name = "service", referencedColumnName = "id")
     private Service service;

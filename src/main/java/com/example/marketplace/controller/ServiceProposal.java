@@ -50,8 +50,7 @@ public class ServiceProposal {
             security = { @SecurityRequirement(name = "bearerAuth") }
     )
     @GetMapping("")
-    public ResponseEntity getServicesProposals(){
-
+    public ResponseEntity getServiceProposals(){
         return ResponseEntity.ok(service.getAll());
     }
 
@@ -67,9 +66,27 @@ public class ServiceProposal {
             }
     )
     @GetMapping("/{idserviceproposal}")
-    public ResponseEntity getServiceProposal(@PathVariable int idserviceproposal)
+    public ResponseEntity getServiceProposalById(@PathVariable int idserviceproposal)
     {
         return ResponseEntity.ok(service.getById(idserviceproposal));
+    }
+
+
+    @Operation(
+            summary = "",
+            security = { @SecurityRequirement(name = "bearerAuth") },
+            description = "",
+            responses = {
+                    @ApiResponse(
+                            description = "",
+                            responseCode = ""
+                    )
+            }
+    )
+    @GetMapping("/{serviceid}/{providerid}")
+    public ResponseEntity getServiceProposalByServiceIdAndProviderId(@PathVariable int serviceid, @PathVariable int providerid){
+
+        return ResponseEntity.ok(service.getServiceProposalByServiceIdAndProviderId(serviceid,providerid));
     }
 
 
