@@ -4,6 +4,7 @@ package com.example.marketplace.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -46,6 +47,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/asking-service/**").permitAll()
                         .requestMatchers("/api/category/**").authenticated()
                         .requestMatchers("/api/service/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/service-proposal/**").permitAll()
                         .requestMatchers("/api/service-proposal/**").authenticated()
                         .requestMatchers("/api/uploads/**").permitAll()
                         .requestMatchers("/api/provider/**").permitAll()

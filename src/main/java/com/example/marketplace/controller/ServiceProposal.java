@@ -47,7 +47,7 @@ public class ServiceProposal {
 
     @Operation(
             summary = "",
-            security = { @SecurityRequirement(name = "bearerAuth") }
+            security = {  }
     )
     @GetMapping("")
     public ResponseEntity getServiceProposals(){
@@ -59,7 +59,7 @@ public class ServiceProposal {
 
     @Operation(
             summary = "",
-            security = { @SecurityRequirement(name = "bearerAuth")},
+            security = { },
             description = "",
             responses = {
 
@@ -74,7 +74,7 @@ public class ServiceProposal {
 
     @Operation(
             summary = "",
-            security = { @SecurityRequirement(name = "bearerAuth") },
+            security = {  },
             description = "",
             responses = {
                     @ApiResponse(
