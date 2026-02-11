@@ -3,6 +3,8 @@ package com.example.marketplace.service.implementations;
 import com.example.marketplace.dto.request.CategoryRequestDTO;
 import com.example.marketplace.dto.response.CategoryResponseDTO;
 import com.example.marketplace.entity.Category;
+import com.example.marketplace.exception.CategoryAlreadyExistException;
+import com.example.marketplace.exception.CategoryNotFoundException;
 import com.example.marketplace.mapper.request.CategoryRequestMapper;
 import com.example.marketplace.mapper.response.CategoryResponseMapper;
 import com.example.marketplace.repository.CategoryRepository;
@@ -12,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CategoryService implements CategoryServiceInterface {
@@ -34,9 +38,19 @@ public class CategoryService implements CategoryServiceInterface {
     @Override
     public CategoryResponseDTO save(CategoryRequestDTO dto) {
 
-        Category category=categoryRepository.save(categoryRequestMapper.toEntity(dto));
+        if(categoryRepository.findCategoryByName(dto.getName())!=null)
+            throw new CategoryAlreadyExistException("This category already exist");
+        else{
+            CategoryResponseDTO response=categoryResponseMapper.toDTO(categoryRepository.save(categoryRequestMapper.toEntity(dto)));
+            Map<String,Map<String,String>> links=new HashMap<>();
+            Map<String,String> self=new HashMap<>();
+            self.put("href","categories/"+response.getId());
 
-        return categoryResponseMapper.toDTO(category);
+            links.put("self",self);
+            response.set_links(links);
+
+            return response;
+        }
     }
 
     @Override
@@ -46,7 +60,16 @@ public class CategoryService implements CategoryServiceInterface {
 
         for(Category category:categoryRepository.findAll())
         {
-            categories.add(categoryResponseMapper.toDTO(category));
+            CategoryResponseDTO response=categoryResponseMapper.toDTO(category);
+            Map<String,Map<String,String>> links=new HashMap<>();
+            Map<String,String> self=new HashMap<>();
+            self.put("href","categories/"+response.getId());
+
+            links.put("self",self);
+
+            response.set_links(links);
+
+            categories.add(response);
         }
 
         return categories;
@@ -56,10 +79,19 @@ public class CategoryService implements CategoryServiceInterface {
     public CategoryResponseDTO getById(int id) {
         Category category=categoryRepository.findById(id).orElse(null);
 
-        if(category==null)
-            return null;
+        if (category==null)
+            throw new CategoryNotFoundException("There no category with this id");
         else{
-            return categoryResponseMapper.toDTO(category);
+            CategoryResponseDTO response=categoryResponseMapper.toDTO(category);
+
+            Map<String,Map<String,String>> links=new HashMap<>();
+            Map<String,String> self=new HashMap<>();
+            self.put("href","categories/"+response.getId());
+
+            links.put("self",self);
+            response.set_links(links);
+
+            return response;
         }
     }
 

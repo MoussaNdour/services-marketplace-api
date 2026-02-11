@@ -6,16 +6,14 @@ import com.example.marketplace.dto.response.CategoryResponseDTO;
 import com.example.marketplace.service.interfaces.CategoryServiceInterface;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins="http://localhost:8000")
 @RestController
-@RequestMapping("/api/category")
+@RequestMapping("/api/categories")
 public class Category {
 
     @Autowired
@@ -23,7 +21,7 @@ public class Category {
 
     @Operation(
             summary = "Create service",
-            security = { @SecurityRequirement(name = "bearerAuth") },
+            security = {  },
             description = "Accordingly to REST principles, this endpoint is for creating a category and need to be an admin and service provider",
             responses = {
                     @ApiResponse(
@@ -43,17 +41,12 @@ public class Category {
     @PostMapping("")
     public ResponseEntity create(@RequestBody @Valid CategoryRequestDTO category)
     {
-        CategoryResponseDTO dto =service.save(category);
-
-        if(dto!=null)
-            return ResponseEntity.ok(dto);
-        else
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        return ResponseEntity.ok(service.save(category));
     }
 
     @Operation(
             summary = "Get All Categories",
-            security = { @SecurityRequirement(name = "bearerAuth") },
+            security = {  },
             description = "This endpoint is for retrieving all existing services and just need to be authenticated",
             responses = {
                     @ApiResponse(
@@ -67,4 +60,20 @@ public class Category {
         return ResponseEntity.ok(service.getAll());
     }
 
+    @Operation(
+            summary = "",
+            description = "",
+            security = {},
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully retrieved category"
+                    )
+            }
+    )
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryResponseDTO> getCategoryById(@PathVariable int id){
+
+        return ResponseEntity.ok(service.getById(id));
+    }
 }

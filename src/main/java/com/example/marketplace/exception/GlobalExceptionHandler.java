@@ -22,36 +22,27 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(EmailAlreadyUserException.class)
-    public ResponseEntity<Map<String,String>> handleEmailException(EmailAlreadyUserException e){
-        Map<String,String> error=new HashMap<>();
-        error.put("error",e.getMessage());
-        return new ResponseEntity<>(error,HttpStatus.CONFLICT);
+    public ResponseEntity<String> handleEmailException(EmailAlreadyUserException e){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 
     @ExceptionHandler(ForbiddenOperationException.class)
-    public ResponseEntity<Map<String,String>> handleForbiddenOperationException(ForbiddenOperationException e){
-        Map<String,String> error=new HashMap<>();
-        error.put("error",e.getMessage());
-        return new ResponseEntity<>(error,HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<String> handleForbiddenOperationException(ForbiddenOperationException e){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
     @ExceptionHandler(ProviderNotFoundException.class)
-    public ResponseEntity<Map<String,String>> handleProviderNotFoundException(ProviderNotFoundException e){
-        Map<String,String> error=new HashMap<>();
-        error.put("error",e.getMessage());
-        return new ResponseEntity<>(error,HttpStatus.NOT_FOUND);
+    public ResponseEntity<String> handleProviderNotFoundException(ProviderNotFoundException e){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     @ExceptionHandler(ServiceNotFoundException.class)
-    public ResponseEntity<Map<String,String>> handleServiceNotFoundException(ServiceNotFoundException e){
-        Map<String,String> error=new HashMap<>();
-        error.put("error",e.getMessage());
-        return new ResponseEntity<>(error,HttpStatus.NOT_FOUND);
+    public ResponseEntity<String> handleServiceNotFoundException(ServiceNotFoundException e){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     @ExceptionHandler(NonexistingImageException.class)
     public ResponseEntity<String> handleNonexistingImageException(NonexistingImageException e){
-
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
@@ -76,5 +67,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ServiceProposalNotFoundException.class)
     public ResponseEntity<String> handleServiceProposalNotFoundException(ServiceProposalNotFoundException e){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<String> handleCategoryNotFoundExceptiono(CategoryNotFoundException e){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(CategoryAlreadyExistException.class)
+    public ResponseEntity<String> handleCategoryAlreadyExistException(CategoryAlreadyExistException e){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 }

@@ -45,7 +45,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/asking-service/**").permitAll()
-                        .requestMatchers("/api/category/**").authenticated()
+                        .requestMatchers("/api/categories/**").permitAll()
                         .requestMatchers("/api/service/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/service-proposal/**").permitAll()
                         .requestMatchers("/api/service-proposal/**").authenticated()
