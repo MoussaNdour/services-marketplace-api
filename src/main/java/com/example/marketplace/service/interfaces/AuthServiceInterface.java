@@ -28,4 +28,6 @@ public interface AuthServiceInterface {
     AdminResponseDTO findAdmin(String email);
 
     List<UserResponseDTO> getAllUsers();
+
+    String refreshToken(User user);
 }

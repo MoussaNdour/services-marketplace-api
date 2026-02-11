@@ -23,6 +23,7 @@ import com.example.marketplace.repository.AdminRepository;
 import com.example.marketplace.repository.ClientRepository;
 import com.example.marketplace.repository.ProviderRepository;
 import com.example.marketplace.repository.UserRepository;
+import com.example.marketplace.service.JwtService;
 import com.example.marketplace.service.interfaces.AdminServiceInterface;
 import com.example.marketplace.service.interfaces.AuthServiceInterface;
 import com.example.marketplace.service.interfaces.ClientServiceInterface;
@@ -87,6 +88,9 @@ public class AuthService implements AuthServiceInterface {
 
     @Autowired
     UserResponseMapper userResponseMapper;
+
+    @Autowired
+    JwtService jwtService;
 
     @Override
     public boolean isEmailFree(String email) {
@@ -213,6 +217,11 @@ public class AuthService implements AuthServiceInterface {
         }
 
         return users;
+    }
+
+    @Override
+    public String refreshToken(User user) {
+        return jwtService.generateToken(user.getEmail(),user.getRole());
     }
 
 }

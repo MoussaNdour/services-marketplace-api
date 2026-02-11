@@ -20,6 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import com.example.marketplace.service.JwtService;
@@ -77,6 +78,7 @@ public class Auth {
                     {
                         Map<String,Object> response=new HashMap<>();
                         response.put("token", jwtService.generateToken(user1.getUsername(),user1.getRole().toUpperCase()));
+                        response.put("refreshToken",jwtService.generateRefreshToken(user1.getUsername(),user1.getRole().toUpperCase()));
                         response.put("user",admin);
 
                         return ResponseEntity.ok(response);
@@ -95,6 +97,7 @@ public class Auth {
                     if(client!=null){
                         Map<String,Object> response=new HashMap<>();
                         response.put("token", jwtService.generateToken(user1.getUsername(),user1.getRole().toUpperCase()));
+                        response.put("refreshToken",jwtService.generateRefreshToken(user1.getUsername(),user1.getRole().toUpperCase()));
                         response.put("user",client);
 
                         return ResponseEntity.ok(response);
@@ -102,6 +105,7 @@ public class Auth {
                     else{
                         Map<String,Object> response=new HashMap<>();
                         response.put("token", jwtService.generateToken(user1.getUsername(),user1.getRole().toUpperCase()));
+
 
                         return ResponseEntity.ok(response);
                     }
@@ -114,6 +118,7 @@ public class Auth {
                     {
                         Map<String,Object> response=new HashMap<>();
                         response.put("token", jwtService.generateToken(user1.getUsername(),user1.getRole().toUpperCase()));
+                        response.put("refreshToken",jwtService.generateRefreshToken(user1.getUsername(),user1.getRole().toUpperCase()));
                         response.put("user",provider);
 
                         return ResponseEntity.ok(response);
@@ -121,7 +126,6 @@ public class Auth {
                     else{
                         Map<String,Object> response=new HashMap<>();
                         response.put("token", jwtService.generateToken(user1.getUsername(),user1.getRole().toUpperCase()));
-                       
 
                         return ResponseEntity.ok(response);
                     }
@@ -178,6 +182,16 @@ public class Auth {
     }
 
     @Operation(
+        security = {@SecurityRequirement(name = "bearerAuth")}
+    )
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/refresh-token")
+    public ResponseEntity<String> refreshToken(@AuthenticationPrincipal User user){
+
+        return ResponseEntity.ok(service.refreshToken(user));
+    }
+
+    @Operation(
             summary = "Get All existing users",
             description = "Only for administrators",
             security = { @SecurityRequirement(name = "bearerAuth")}
@@ -185,7 +199,6 @@ public class Auth {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users")
     public ResponseEntity getAllUsers(){
-
         return ResponseEntity.ok(service.getAllUsers());
     }
 }
