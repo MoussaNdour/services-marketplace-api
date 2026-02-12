@@ -3,6 +3,7 @@ package com.example.marketplace.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -28,7 +29,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ForbiddenOperationException.class)
     public ResponseEntity<String> handleForbiddenOperationException(ForbiddenOperationException e){
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
     @ExceptionHandler(ProviderNotFoundException.class)
@@ -77,5 +78,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CategoryAlreadyExistException.class)
     public ResponseEntity<String> handleCategoryAlreadyExistException(CategoryAlreadyExistException e){
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<String> handleAuthException(AuthenticationException e){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email or password incorrect");
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<String> handleIllegalStateException(IllegalStateException e){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
+
+    @ExceptionHandler(UnauthorizedUserRoleException.class)
+    public ResponseEntity<String> handleUnauthorizedUserRoleException(UnauthorizedUserRoleException e)
+    {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 }

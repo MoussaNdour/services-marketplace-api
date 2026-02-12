@@ -25,6 +25,4 @@ public class ClientResponseDTO {
 
     private String email;
 
-
-    private String password;
 }

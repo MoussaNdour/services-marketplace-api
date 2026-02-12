@@ -25,5 +25,4 @@ public class ServiceResponseDTO {
 
     private String imagePath;
 
-
 }

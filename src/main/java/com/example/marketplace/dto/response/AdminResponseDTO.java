@@ -17,5 +17,4 @@ public class AdminResponseDTO {
     private String email;
 
 
-    private String password;
 }

@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
         visible = true
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = AdminRequestDTO.class, name = "ADMIN"),
         @JsonSubTypes.Type(value = ClientRequestDTO.class, name = "CLIENT"),
         @JsonSubTypes.Type(value = ProviderRequestDTO.class, name = "PROVIDER")
 })

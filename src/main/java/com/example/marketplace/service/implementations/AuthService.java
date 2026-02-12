@@ -1,41 +1,33 @@
 package com.example.marketplace.service.implementations;
 
-import com.example.marketplace.dto.request.AdminRequestDTO;
-import com.example.marketplace.dto.request.ClientRequestDTO;
-import com.example.marketplace.dto.request.ProviderRequestDTO;
-import com.example.marketplace.dto.response.AdminResponseDTO;
+import com.example.marketplace.dto.request.*;
 import com.example.marketplace.dto.response.ClientResponseDTO;
 import com.example.marketplace.dto.response.ProviderRespoonseDTO;
-import com.example.marketplace.dto.response.UserResponseDTO;
-import com.example.marketplace.entity.Admin;
 import com.example.marketplace.entity.Client;
 import com.example.marketplace.entity.Provider;
 import com.example.marketplace.entity.User;
 import com.example.marketplace.exception.EmailAlreadyUserException;
-import com.example.marketplace.mapper.request.AdminRequestMapper;
+import com.example.marketplace.exception.UnauthorizedUserRoleException;
 import com.example.marketplace.mapper.request.ClientRequestMapper;
 import com.example.marketplace.mapper.request.ProviderRequestMapper;
 import com.example.marketplace.mapper.response.AdminResponseMapper;
 import com.example.marketplace.mapper.response.ClientResponseMapper;
 import com.example.marketplace.mapper.response.ProviderResponseMapper;
-import com.example.marketplace.mapper.response.UserResponseMapper;
 import com.example.marketplace.repository.AdminRepository;
 import com.example.marketplace.repository.ClientRepository;
 import com.example.marketplace.repository.ProviderRepository;
 import com.example.marketplace.repository.UserRepository;
 import com.example.marketplace.service.JwtService;
-import com.example.marketplace.service.interfaces.AdminServiceInterface;
 import com.example.marketplace.service.interfaces.AuthServiceInterface;
-import com.example.marketplace.service.interfaces.ClientServiceInterface;
-import com.example.marketplace.service.interfaces.ProviderServiceInterface;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.example.marketplace.dto.response.*;
 
 
 @Service
@@ -54,6 +46,9 @@ public class AuthService implements AuthServiceInterface {
     AdminRepository adminRepository;
 
     @Autowired
+    AdminResponseMapper adminResponseMapper;
+
+    @Autowired
     ClientRequestMapper clientRequestMapper;
 
     @Autowired
@@ -65,32 +60,15 @@ public class AuthService implements AuthServiceInterface {
     @Autowired
     ProviderResponseMapper providerResponseMapper;
 
-    @Autowired
-    AdminRequestMapper adminRequestMapper;
-
-    @Autowired
-    AdminResponseMapper adminResponseMapper;
-
 
     @Autowired
     PasswordEncoder encoder;
 
-
-    @Autowired
-    ClientServiceInterface clientService;
-
-
-    @Autowired
-    ProviderServiceInterface providerService;
-
-    @Autowired
-    AdminServiceInterface adminService;
-
-    @Autowired
-    UserResponseMapper userResponseMapper;
-
     @Autowired
     JwtService jwtService;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
 
     @Override
     public boolean isEmailFree(String email) {
@@ -112,13 +90,8 @@ public class AuthService implements AuthServiceInterface {
             user.setRole("CLIENT");
             user.setEmail(client.getEmail());
             user.setPassword(encoder.encode(client.getPassword()));
-            try {
-                userRepository.save(user);
-            }
-            catch(DataIntegrityViolationException e)
-            {
-                return null;
-            }
+
+            userRepository.save(user);
 
             Client clientEntity=clientRequestMapper.toEntity(client);
             clientEntity.setUser(user);
@@ -139,13 +112,9 @@ public class AuthService implements AuthServiceInterface {
             user.setRole("PROVIDER");
             user.setEmail(provider.getEmail());
             user.setPassword(encoder.encode(provider.getPassword()));
-            try {
-                userRepository.save(user);
-            }
-            catch(DataIntegrityViolationException e)
-            {
-                return null;
-            }
+
+            userRepository.save(user);
+
 
             Provider providerEntity=providerRequestMapper.toEntity(provider);
             providerEntity.setUser(user);
@@ -166,62 +135,60 @@ public class AuthService implements AuthServiceInterface {
         }
     }
 
-    @Transactional
-    @Override
-    public AdminResponseDTO registerAdmin(AdminRequestDTO admin) {
-        if(!isEmailFree(admin.getEmail()))
-            throw new EmailAlreadyUserException("There is already an account with this email.");
-        else{
-            User user=new User();
-            user.setRole("ADMIN");
-            user.setEmail(admin.getEmail());
-            user.setPassword(encoder.encode(admin.getPassword()));
-            try {
-                userRepository.save(user);
-            }
-            catch(DataIntegrityViolationException e)
-            {
-                return null;
-            }
-
-            Admin adminEntiy=adminRequestMapper.toEntity(admin);
-            adminEntiy.setUser(user);
-
-            Admin savedEntiy=adminRepository.save(adminEntiy);
-
-            return adminResponseMapper.toDTO(savedEntiy);
-        }
-    }
 
     @Override
-    public ClientResponseDTO findClient(String email) {
-        return clientService.getByEmail(email);
-    }
+    public LoginResponseDTO connect(Login login) {
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword())
+        );
 
-    @Override
-    public ProviderRespoonseDTO findProvider(String email) {
-        return providerService.getByEmail(email);
-    }
+        User user = (User) auth.getPrincipal();
+        String role = user.getRole().toUpperCase();
 
-    @Override
-    public AdminResponseDTO findAdmin(String email) {
-        return adminService.getByEmail(email);
-    }
 
-    @Override
-    public List<UserResponseDTO> getAllUsers(){
-        List<UserResponseDTO> users=new ArrayList<>();
+        Object profile = findProfileByRole(user.getEmail(), role);
 
-        for(User user:userRepository.findAll()){
-            users.add(userResponseMapper.toDTO(user));
+        if (profile == null) {
+            throw new IllegalStateException("User authenticated but no profile found for role: " + role);
         }
 
-        return users;
+        return LoginResponseDTO.builder()
+                .token(jwtService.generateToken(user.getUsername(), role))
+                .refreshToken(jwtService.generateRefreshToken(user.getUsername(), role))
+                .profile(profile)
+                .build();
     }
+
+
+    private Object findProfileByRole(String email, String role) {
+        return switch (role) {
+            case "ADMIN" -> adminResponseMapper.toDTO(adminRepository.findByUserEmail(email).orElse(null));
+            case "CLIENT" -> clientResponseMapper.toDTO(clientRepository.findByUserEmail(email).orElse(null));
+            case "PROVIDER" -> providerResponseMapper.toDTO(providerRepository.findByUserEmail(email).orElse(null));
+            default -> null;
+        };
+    }
+
 
     @Override
     public String refreshToken(User user) {
         return jwtService.generateToken(user.getEmail(),user.getRole());
+    }
+
+    @Override
+    public Object registerUser(RegistrationRequest request) {
+        switch (request.role.name()) {
+
+            case "CLIENT" -> {
+                return registerClient((ClientRequestDTO) request);
+            }
+            case "PROVIDER" -> {
+                return registerProvider((ProviderRequestDTO) request);
+            }
+            default -> {
+                throw new UnauthorizedUserRoleException("This role is not authorized");
+            }
+        }
     }
 
 }

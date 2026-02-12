@@ -9,6 +9,5 @@ import org.mapstruct.Mapping;
 public interface ClientResponseMapper {
 
     @Mapping(source = "user.email", target = "email")
-    @Mapping(source = "user.password", target = "password")
     ClientResponseDTO toDTO(Client client);
 }
