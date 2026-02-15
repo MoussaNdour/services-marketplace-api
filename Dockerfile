@@ -1,5 +1,9 @@
-FROM openjdk:26-trixie
+FROM eclipse-temurin:21-jre-alpine
 
-ADD target/api-marketplace.jar marketplace.jar
+WORKDIR /app
 
-ENTRYPOINT ["java", "-jar","api-marketplace.jar"]
+COPY target/api-marketplace.jar marketplace.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar","marketplace.jar"]

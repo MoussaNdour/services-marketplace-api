@@ -9,7 +9,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 
 @CrossOrigin(origins="http://localhost:8000")
 @RestController
@@ -22,7 +24,6 @@ public class AskingService {
     @Operation(
             summary = "Getting all asking services",
             description = "",
-            security = @SecurityRequirement(name = ""),
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -32,7 +33,6 @@ public class AskingService {
     )
     @GetMapping("")
     public ResponseEntity getAllserviceAsking(){
-
         return ResponseEntity.ok(service.getAll());
     }
 
@@ -40,7 +40,6 @@ public class AskingService {
     @Operation(
             summary = "Getting an asking service by using his id",
             description = "",
-            security = @SecurityRequirement(name = ""),
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -62,7 +61,7 @@ public class AskingService {
     @Operation(
             summary = "Create an service asking",
             description = "",
-            security = @SecurityRequirement(name = ""),
+            security = @SecurityRequirement(name = "bearerAuth"),
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -74,6 +73,7 @@ public class AskingService {
                     )
             }
     )
+    @PreAuthorize("hasRole('PROVIDER')")
     @PostMapping("")
     public ResponseEntity createServiceAsking(@RequestBody @Valid AskingServiceRequestDTO asking){
         return ResponseEntity.status(201).body(service.save(asking));

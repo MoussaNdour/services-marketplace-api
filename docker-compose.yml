@@ -1,7 +1,9 @@
 services:
 
+
   app:
     build: .
+    container_name: marketplace-app
     depends_on:
       - postgres
     ports:
@@ -9,14 +11,23 @@ services:
     networks:
       - my-network
 
+    develop:
+      watch:
+        - action: rebuild
+          path: pom.xml
+        - action: rebuild
+          path: src/main
+
   postgres:
     image: 'postgres:15'
-    container_name: memoire-db
+    container_name: marketplace-db
     environment:
       - 'POSTGRES_DB=marketplace'
-      - 'POSTGRES_PASSWORD=20010831A'
-      - 'POSTGRES_USER=moussandour01'
-      - 'PGDATA:/data/postgres'
+      - 'POSTGRES_PASSWORD=BirameFallou@9901'
+      - 'POSTGRES_USER=moussandourswe'
+      - 'PGDATA=/var/lib/postgresql/data/pgdata'
+    volumes:
+      - db-data:/var/lib/postgresql/data
 
     ports:
       - "5432:5432"
@@ -27,3 +38,6 @@ services:
 networks:
   my-network:
     driver: bridge
+
+volumes:
+  db-data:

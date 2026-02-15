@@ -23,7 +23,6 @@ public class ClientRequestDTO extends RegistrationRequest{
     @NotNull
     private String lastname;
 
-    @NotNull
     private String profession;
 
     @NotBlank
