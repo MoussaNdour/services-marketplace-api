@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins="http://localhost:8000")
 @RestController
-@RequestMapping("/api/categories")
+@RequestMapping("/api")
 public class Category {
 
     @Autowired
@@ -38,7 +38,7 @@ public class Category {
                     )
             }
     )
-    @PostMapping("")
+    @PostMapping("/categories")
     public ResponseEntity create(@RequestBody @Valid CategoryRequestDTO category)
     {
         return ResponseEntity.ok(service.save(category));
@@ -55,7 +55,7 @@ public class Category {
                     )
             }
     )
-    @GetMapping("")
+    @GetMapping("/public/categories")
     public ResponseEntity getAll(){
         return ResponseEntity.ok(service.getAll());
     }
@@ -71,7 +71,7 @@ public class Category {
                     )
             }
     )
-    @GetMapping("/{id}")
+    @GetMapping("/categories/{id}")
     public ResponseEntity<CategoryResponseDTO> getCategoryById(@PathVariable int id){
 
         return ResponseEntity.ok(service.getById(id));

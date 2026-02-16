@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins="http://localhost:8000")
 @RestController
-@RequestMapping("/api/asking-service")
+@RequestMapping("/api")
 public class AskingService {
 
     @Autowired
@@ -31,7 +31,7 @@ public class AskingService {
                     )
             }
     )
-    @GetMapping("")
+    @GetMapping("/public/asking-service")
     public ResponseEntity getAllserviceAsking(){
         return ResponseEntity.ok(service.getAll());
     }
@@ -51,7 +51,7 @@ public class AskingService {
                     )
             }
     )
-    @GetMapping("/{id}")
+    @GetMapping("/asking-service/{id}")
     public ResponseEntity getServiceAskingById(@PathVariable int id){
         return ResponseEntity.ok(service.getById(id));
     }
@@ -74,7 +74,7 @@ public class AskingService {
             }
     )
     @PreAuthorize("hasRole('PROVIDER')")
-    @PostMapping("")
+    @PostMapping("/asking-service")
     public ResponseEntity createServiceAsking(@RequestBody @Valid AskingServiceRequestDTO asking){
         return ResponseEntity.status(201).body(service.save(asking));
     }
@@ -94,7 +94,7 @@ public class AskingService {
                     )
             }
     )
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/asking-service/{id}")
     public ResponseEntity deleteServiceAsking(@PathVariable int id){
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

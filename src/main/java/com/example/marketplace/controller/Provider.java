@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/provider")
+@RequestMapping("/api")
 @CrossOrigin(origins="http://localhost:8000",methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.OPTIONS})
 public class Provider {
 
@@ -26,10 +26,8 @@ public class Provider {
 
             }
     )
-    @GetMapping("")
+    @GetMapping("/public/providers")
     public ResponseEntity getAllProviders(){
-
-
         return ResponseEntity.ok(service.getAll());
     }
 
@@ -47,7 +45,7 @@ public class Provider {
                     )
             }
     )
-    @GetMapping("/{idprovider}")
+    @GetMapping("/provider/{idprovider}")
     public ResponseEntity getProviderById(@PathVariable int idprovider){
 
         return ResponseEntity.ok(service.getById(idprovider));

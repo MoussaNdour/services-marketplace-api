@@ -20,7 +20,7 @@ import java.util.Map;
 
 @CrossOrigin(origins="http://localhost:8000")
 @RestController
-@RequestMapping("/api/service")
+@RequestMapping("/api")
 public class Service {
 
     @Autowired
@@ -39,7 +39,7 @@ public class Service {
                     )
             }
     )
-    @GetMapping("")
+    @GetMapping("/public/services")
     public ResponseEntity getAllServices(){
         return ResponseEntity.ok(service.getAll());
     }
@@ -62,7 +62,7 @@ public class Service {
                     )
             }
     )
-    @GetMapping("/{id}")
+    @GetMapping("/services/{id}")
     public ResponseEntity getServiceById(@PathVariable int id){
         ServiceResponseDTO dto=service.getById(id);
 
@@ -89,7 +89,7 @@ public class Service {
                     )
             }
     )
-    @PostMapping("")
+    @PostMapping("/services")
     public ResponseEntity createService(@RequestBody @Valid ServiceRequestDTO dto){
         ServiceResponseDTO responseDTO=service.save(dto);
 
@@ -120,7 +120,7 @@ public class Service {
                     )
             }
     )
-    @GetMapping("/{serviceId}/providers")
+    @GetMapping("/public/services/{serviceId}/providers")
     public ResponseEntity getProvidersByServiceId(@PathVariable int serviceId){
         return ResponseEntity.ok(service.getProvidersByServiceId(serviceId));
     }

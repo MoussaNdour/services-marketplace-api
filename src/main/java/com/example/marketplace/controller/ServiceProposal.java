@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins="http://localhost:8000")
 @RestController
-@RequestMapping("/api/service-proposal")
+@RequestMapping("/api")
 public class ServiceProposal {
 
     @Autowired
@@ -36,7 +36,7 @@ public class ServiceProposal {
                     )
             }
     )
-    @PostMapping("")
+    @PostMapping("/service-proposals")
     public ResponseEntity proposeService(@Valid @RequestBody ServiceProposalRequestDTO dto, @AuthenticationPrincipal User user){
         service.saveServiceProposal(dto,user);
 
@@ -49,7 +49,7 @@ public class ServiceProposal {
             summary = "",
             security = {  }
     )
-    @GetMapping("")
+    @GetMapping("/public/service-proposals")
     public ResponseEntity getServiceProposals(){
         return ResponseEntity.ok(service.getAll());
     }
@@ -65,29 +65,28 @@ public class ServiceProposal {
 
             }
     )
-    @GetMapping("/{idserviceproposal}")
+    @GetMapping("/service-proposal/{idserviceproposal}")
     public ResponseEntity getServiceProposalById(@PathVariable int idserviceproposal)
     {
         return ResponseEntity.ok(service.getById(idserviceproposal));
     }
 
 
-    @Operation(
-            summary = "",
-            security = {  },
-            description = "",
-            responses = {
-                    @ApiResponse(
-                            description = "",
-                            responseCode = ""
-                    )
-            }
-    )
-    @GetMapping("/{serviceid}/{providerid}")
-    public ResponseEntity getServiceProposalByServiceIdAndProviderId(@PathVariable int serviceid, @PathVariable int providerid){
-
-        return ResponseEntity.ok(service.getServiceProposalByServiceIdAndProviderId(serviceid,providerid));
-    }
+//    @Operation(
+//            summary = "",
+//            security = {  },
+//            description = "",
+//            responses = {
+//                    @ApiResponse(
+//                            description = "",
+//                            responseCode = ""
+//                    )
+//            }
+//    )
+//    @GetMapping("/service-proposal/{serviceid}/{providerid}")
+//    public ResponseEntity getServiceProposalByServiceIdAndProviderId(@PathVariable int serviceid, @PathVariable int providerid){
+//        return ResponseEntity.ok(service.getServiceProposalByServiceIdAndProviderId(serviceid,providerid));
+//    }
 
 
     @Operation(
@@ -99,7 +98,7 @@ public class ServiceProposal {
             }
     )
     @PreAuthorize("hasAnyRole('PROVIDER', 'ADMIN')")
-    @DeleteMapping("/{idserviceproposal}")
+    @DeleteMapping("/service-proposal/{idserviceproposal}")
     public ResponseEntity deleteServiceProposal(@PathVariable int idserviceproposal){
         service.deleteById(idserviceproposal);
 
