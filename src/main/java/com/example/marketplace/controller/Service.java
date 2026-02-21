@@ -29,7 +29,6 @@ public class Service {
 
     @Operation(
             summary = "Return all services",
-            security = { @SecurityRequirement(name= "bearerAuth")},
             description = "Retrieve all services from the database and return them to the user as a list of services that can be blank.",
             responses = {
                     @ApiResponse(
@@ -40,14 +39,17 @@ public class Service {
             }
     )
     @GetMapping("/public/services")
-    public ResponseEntity getAllServices(){
+    public ResponseEntity getAllServices(@RequestParam(required = false) String name){
+        if (name != null && !name.isEmpty()){
+            return ResponseEntity.ok(service.searchService(name));
+        }
         return ResponseEntity.ok(service.getAll());
     }
 
 
+
     @Operation(
             summary = "retrieve service by his id",
-            security = { @SecurityRequirement(name = "bearerAuth") },
             description = "Check if the service exist in the database by using his id and return it, if it exist.",
             responses = {
                     @ApiResponse(
@@ -62,7 +64,7 @@ public class Service {
                     )
             }
     )
-    @GetMapping("/services/{id}")
+    @GetMapping("/public/services/{id}")
     public ResponseEntity getServiceById(@PathVariable int id){
         ServiceResponseDTO dto=service.getById(id);
 
@@ -108,7 +110,6 @@ public class Service {
     @Operation(
             summary = "Retrieve all Providers providing an specific service",
             description = "This endpoint allow to retrieve all providers providing an specific service by using the id of the service",
-            security = {@SecurityRequirement(name = "bearerAuth")},
             responses = {
                     @ApiResponse(
                             responseCode = "404",

@@ -51,7 +51,7 @@ public class AskingService {
                     )
             }
     )
-    @GetMapping("/asking-service/{id}")
+    @GetMapping("/public/asking-service/{id}")
     public ResponseEntity getServiceAskingById(@PathVariable int id){
         return ResponseEntity.ok(service.getById(id));
     }
@@ -73,7 +73,7 @@ public class AskingService {
                     )
             }
     )
-    @PreAuthorize("hasRole('PROVIDER')")
+    @PreAuthorize("hasRole('CLIENT')")
     @PostMapping("/asking-service")
     public ResponseEntity createServiceAsking(@RequestBody @Valid AskingServiceRequestDTO asking){
         return ResponseEntity.status(201).body(service.save(asking));
@@ -82,7 +82,6 @@ public class AskingService {
     @Operation(
             summary = "Delete an service asking",
             description = "Delete an service asking by using his id",
-            security = @SecurityRequirement(name = ""),
             responses = {
                     @ApiResponse(
                             responseCode = "404",
@@ -94,7 +93,8 @@ public class AskingService {
                     )
             }
     )
-    @DeleteMapping("/asking-service/{id}")
+    @PreAuthorize("hasRole('CLIENT')")
+    @DeleteMapping("/public/asking-service/{id}")
     public ResponseEntity deleteServiceAsking(@PathVariable int id){
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

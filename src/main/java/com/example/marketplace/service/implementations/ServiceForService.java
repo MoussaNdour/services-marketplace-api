@@ -98,4 +98,16 @@ public class ServiceForService implements ServiceForServiceInterface {
 
         return providers;
     }
+
+    @Override
+    public List<ServiceResponseDTO> searchService(String name) {
+
+        List<ServiceResponseDTO> results=new ArrayList<>();
+
+        for(com.example.marketplace.entity.Service service:repos.searchService(name)){
+            results.add(responseMapper.toDTO(service));
+        }
+
+        return results;
+    }
 }

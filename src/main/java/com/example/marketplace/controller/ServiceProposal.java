@@ -65,7 +65,7 @@ public class ServiceProposal {
 
             }
     )
-    @GetMapping("/service-proposal/{idserviceproposal}")
+    @GetMapping("/public/service-proposal/{idserviceproposal}")
     public ResponseEntity getServiceProposalById(@PathVariable int idserviceproposal)
     {
         return ResponseEntity.ok(service.getById(idserviceproposal));

@@ -29,6 +29,9 @@ public class Client {
     @Column(name = "profession")
     private String profession;
 
+    @Column(name = "city")
+    private String city;
+
     @OneToOne
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private User user;

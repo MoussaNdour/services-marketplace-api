@@ -45,7 +45,7 @@ public class Provider {
                     )
             }
     )
-    @GetMapping("/provider/{idprovider}")
+    @GetMapping("/public/provider/{idprovider}")
     public ResponseEntity getProviderById(@PathVariable int idprovider){
 
         return ResponseEntity.ok(service.getById(idprovider));

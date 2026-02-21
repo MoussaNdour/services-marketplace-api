@@ -19,9 +19,9 @@ public class ServiceProposalResponseDTO {
 
     private String providerLastName;
 
-    private int providerid;
-
-    private int serviceid;
-
     private double price;
+
+    private String description;
+
+    private String serviceCategory;
 }

@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -21,6 +24,15 @@ public class AskingService {
     @OneToOne
     @JoinColumn(name = "proposal", referencedColumnName = "id")
     private ServiceProposal proposal;
+
+    @Column(name = "status")
+    private String status;
+
+    @Column(name = "createdAt", columnDefinition = "TIME")
+    private Date createdAt;
+
+    @Column(name = "scheduledAt", columnDefinition = "TIME")
+    private Date scheduledAt;
 
     @ManyToOne
     @JoinColumn(name = "client", referencedColumnName = "id")

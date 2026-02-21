@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 
 
 @NoArgsConstructor
@@ -35,9 +36,14 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-
     @Column(name = "role")
     private String role;
+
+    @Column(name = "createdAt", columnDefinition = "TIME")
+    private Date createdAt;
+
+    @Column(name = "updatedAt", columnDefinition = "TIME")
+    private Date updatedAt;
 
 
     @Override

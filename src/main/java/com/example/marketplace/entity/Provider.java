@@ -34,6 +34,8 @@ public class Provider {
     @Column(name = "yearsOfExperience")
     private int yearsOfExperience;
 
+    @Column(name = "city")
+    private String city;
 
     @OneToOne
     @JoinColumn(name = "userId", referencedColumnName = "id")

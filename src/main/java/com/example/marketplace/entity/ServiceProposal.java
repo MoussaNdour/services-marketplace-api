@@ -2,16 +2,12 @@ package com.example.marketplace.entity;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 @Table(name = "serviceProposal")
 public class ServiceProposal {
 
@@ -23,6 +19,9 @@ public class ServiceProposal {
     @Column(name = "price")
     private double price;
 
+    @Column(name = "description")
+    private String description;
+
     @ManyToOne
     @JoinColumn(name = "service", referencedColumnName = "id")
     private Service service;
@@ -30,6 +29,5 @@ public class ServiceProposal {
     @ManyToOne
     @JoinColumn(name = "provider", referencedColumnName = "id")
     private Provider provider;
-
 
 }

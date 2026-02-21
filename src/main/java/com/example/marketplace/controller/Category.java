@@ -6,6 +6,7 @@ import com.example.marketplace.dto.response.CategoryResponseDTO;
 import com.example.marketplace.service.interfaces.CategoryServiceInterface;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class Category {
 
     @Operation(
             summary = "Create service",
-            security = {  },
+            security = { @SecurityRequirement(name = "bearerAuth") },
             description = "Accordingly to REST principles, this endpoint is for creating a category and need to be an admin and service provider",
             responses = {
                     @ApiResponse(
@@ -71,7 +72,7 @@ public class Category {
                     )
             }
     )
-    @GetMapping("/categories/{id}")
+    @GetMapping("/public/categories/{id}")
     public ResponseEntity<CategoryResponseDTO> getCategoryById(@PathVariable int id){
 
         return ResponseEntity.ok(service.getById(id));
