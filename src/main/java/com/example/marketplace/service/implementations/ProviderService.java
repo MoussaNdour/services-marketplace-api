@@ -1,7 +1,7 @@
 package com.example.marketplace.service.implementations;
 
 import com.example.marketplace.dto.request.ProviderRequestDTO;
-import com.example.marketplace.dto.response.ProviderRespoonseDTO;
+import com.example.marketplace.dto.response.ProviderResponseDTO;
 import com.example.marketplace.entity.Provider;
 import com.example.marketplace.exception.ProviderNotFoundException;
 import com.example.marketplace.mapper.request.ProviderRequestMapper;
@@ -27,13 +27,13 @@ public class ProviderService implements ProviderServiceInterface {
     ProviderResponseMapper responseMapper;
 
     @Override
-    public ProviderRespoonseDTO save(ProviderRequestDTO dto) {
+    public ProviderResponseDTO save(ProviderRequestDTO dto) {
         return null;
     }
 
     @Override
-    public List<ProviderRespoonseDTO> getAll() {
-        List<ProviderRespoonseDTO> providers=new ArrayList<>();
+    public List<ProviderResponseDTO> getAll() {
+        List<ProviderResponseDTO> providers=new ArrayList<>();
 
         for(Provider provider:repository.findAll()){
 
@@ -44,7 +44,7 @@ public class ProviderService implements ProviderServiceInterface {
     }
 
     @Override
-    public ProviderRespoonseDTO getById(int id) {
+    public ProviderResponseDTO getById(int id) {
 
         Provider provider=repository.findById(id).orElseThrow(
                 ()->new ProviderNotFoundException("Provider not found for this id")
@@ -64,12 +64,23 @@ public class ProviderService implements ProviderServiceInterface {
     }
 
     @Override
-    public ProviderRespoonseDTO getByEmail(String email) {
+    public ProviderResponseDTO getByEmail(String email) {
         Provider provider=repository.findByUserEmail(email).orElse(null);
 
         if(provider==null)
             return null;
         else
             return responseMapper.toDTO(provider);
+    }
+
+    @Override
+    public List<ProviderResponseDTO> getProvidersByServiceId(int id) {
+        List<ProviderResponseDTO> providers = new ArrayList<>();
+
+        for(Provider provider:repository.findByServiceProposalServiceId(id)){
+            providers.add(responseMapper.toDTO(provider));
+        }
+
+        return providers;
     }
 }

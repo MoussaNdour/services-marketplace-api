@@ -5,8 +5,6 @@ import com.example.marketplace.dto.request.*;
 import com.example.marketplace.dto.response.*;
 import com.example.marketplace.entity.User;
 
-import java.util.List;
-
 
 public interface AuthServiceInterface {
 
@@ -14,7 +12,7 @@ public interface AuthServiceInterface {
 
     ClientResponseDTO registerClient(ClientRequestDTO client);
 
-    ProviderRespoonseDTO registerProvider(ProviderRequestDTO provider);
+    ProviderResponseDTO registerProvider(ProviderRequestDTO provider);
 
     LoginResponseDTO connect(Login login);
 

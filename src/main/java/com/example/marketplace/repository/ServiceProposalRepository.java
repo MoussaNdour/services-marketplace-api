@@ -20,11 +20,7 @@ public interface ServiceProposalRepository extends CrudRepository<ServiceProposa
             @Param("idprovider") int idprovider
     );
 
-    @Query(
-            value = "SELECT * from provider where id IN (SELECT provider FROM serviceProposal WHERE service = :serviceid)",
-            nativeQuery = true
-    )
-    Iterable<Provider> getProvidersByServiceId(@Param("serviceid") int serviceid);
+    List<ServiceProposal> findByServiceId(int serviceId);
 
 
     @Query(

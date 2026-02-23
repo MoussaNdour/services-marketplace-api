@@ -1,7 +1,7 @@
 package com.example.marketplace.service.implementations;
 
 import com.example.marketplace.dto.request.ServiceProposalRequestDTO;
-import com.example.marketplace.dto.response.ProviderRespoonseDTO;
+import com.example.marketplace.dto.response.ProviderResponseDTO;
 import com.example.marketplace.dto.response.ServiceProposalResponseDTO;
 import com.example.marketplace.entity.Provider;
 import com.example.marketplace.entity.Service;
@@ -91,7 +91,7 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
     @Override
     public void saveServiceProposal(ServiceProposalRequestDTO dto, User user) {
         if(user.getRole().equals("PROVIDER")){
-            ProviderRespoonseDTO provider=providerService.getByEmail(user.getEmail());
+            ProviderResponseDTO provider=providerService.getByEmail(user.getEmail());
 
             if(dto.getIdprovider()!=provider.getId()){
                 throw new ForbiddenOperationException("Forbidden Operation");
@@ -120,16 +120,6 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
         return serviceProposals;
     }
 
-    @Override
-    public List<Provider> getProvidersByServiceId(int serviceid) {
-        List<Provider> providers=new ArrayList<>();
-
-        for(Provider provider:repository.getProvidersByServiceId(serviceid)){
-            providers.add(provider);
-        }
-
-        return providers;
-    }
 
     @Override
     public ServiceProposalResponseDTO getServiceProposalByServiceIdAndProviderId(int serviceid, int providerid) {
@@ -138,6 +128,17 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
         );
 
         return responseMapper.toDTO(serviceProposal);
+    }
+
+    @Override
+    public List<ServiceProposalResponseDTO> getServiceProposalsByServiceId(int serviceId) {
+        List<ServiceProposalResponseDTO> proposals=new ArrayList<>();
+
+        for(ServiceProposal proposal:repository.findByServiceId(serviceId)){
+            proposals.add(responseMapper.toDTO(proposal));
+        }
+
+        return proposals;
     }
 
 }

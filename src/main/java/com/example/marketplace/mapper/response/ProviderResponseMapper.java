@@ -1,7 +1,7 @@
 package com.example.marketplace.mapper.response;
 
 
-import com.example.marketplace.dto.response.ProviderRespoonseDTO;
+import com.example.marketplace.dto.response.ProviderResponseDTO;
 import com.example.marketplace.entity.Provider;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -10,5 +10,5 @@ import org.mapstruct.Mapping;
 public interface ProviderResponseMapper {
 
     @Mapping(source = "user.email", target = "email")
-    ProviderRespoonseDTO toDTO(Provider provider);
+    ProviderResponseDTO toDTO(Provider provider);
 }

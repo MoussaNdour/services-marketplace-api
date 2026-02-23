@@ -1,10 +1,13 @@
 package com.example.marketplace.service.interfaces;
 
 import com.example.marketplace.dto.request.ProviderRequestDTO;
-import com.example.marketplace.dto.response.ProviderRespoonseDTO;
+import com.example.marketplace.dto.response.ProviderResponseDTO;
 
-public interface ProviderServiceInterface extends GeneralInterface<ProviderRequestDTO, ProviderRespoonseDTO>{
+import java.util.List;
+
+public interface ProviderServiceInterface extends GeneralInterface<ProviderRequestDTO, ProviderResponseDTO>{
 
     void disableAccount(String email);
-    ProviderRespoonseDTO getByEmail(String email);
+    ProviderResponseDTO getByEmail(String email);
+    List<ProviderResponseDTO> getProvidersByServiceId(int id);
 }

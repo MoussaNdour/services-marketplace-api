@@ -1,9 +1,11 @@
 package com.example.marketplace.service.implementations;
 
 import com.example.marketplace.dto.request.ServiceRequestDTO;
-import com.example.marketplace.dto.response.ProviderRespoonseDTO;
+import com.example.marketplace.dto.response.ProviderResponseDTO;
+import com.example.marketplace.dto.response.ServiceProposalResponseDTO;
 import com.example.marketplace.dto.response.ServiceResponseDTO;
 import com.example.marketplace.entity.Provider;
+import com.example.marketplace.entity.ServiceProposal;
 import com.example.marketplace.exception.NonexistingImageException;
 import com.example.marketplace.exception.ServiceNotFoundException;
 import com.example.marketplace.mapper.request.ServiceRequestMapper;
@@ -11,6 +13,7 @@ import com.example.marketplace.mapper.response.ProviderResponseMapper;
 import com.example.marketplace.mapper.response.ServiceResponseMapper;
 import com.example.marketplace.repository.ImageRepository;
 import com.example.marketplace.repository.ServiceRepository;
+import com.example.marketplace.service.interfaces.ProviderServiceInterface;
 import com.example.marketplace.service.interfaces.ServiceForServiceInterface;
 import com.example.marketplace.service.interfaces.ServiceProposalServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +42,7 @@ public class ServiceForService implements ServiceForServiceInterface {
     ServiceProposalServiceInterface serviceProposalService;
 
     @Autowired
-    ProviderResponseMapper providerResponseMapper;
+    ProviderServiceInterface providerService;
 
     @Override
     public ServiceResponseDTO save(ServiceRequestDTO dto) {
@@ -85,19 +88,6 @@ public class ServiceForService implements ServiceForServiceInterface {
         repos.deleteById(id);
     }
 
-    @Override
-    public List<ProviderRespoonseDTO> getProvidersByServiceId(int serviceid) {
-        if(getById(serviceid)==null)
-            throw new ServiceNotFoundException("There is no service with this id");
-
-        List<ProviderRespoonseDTO> providers=new ArrayList<>();
-
-        for(Provider provider:serviceProposalService.getProvidersByServiceId(serviceid)){
-            providers.add(providerResponseMapper.toDTO(provider));
-        }
-
-        return providers;
-    }
 
     @Override
     public List<ServiceResponseDTO> searchService(String name) {
@@ -109,5 +99,26 @@ public class ServiceForService implements ServiceForServiceInterface {
         }
 
         return results;
+    }
+
+    @Override
+    public List<ServiceProposalResponseDTO> getProposalsByServiceId(int id) {
+        if(getById(id)==null)
+            throw new ServiceNotFoundException("There is no service with this id");
+
+        List<ServiceProposalResponseDTO> proposals = serviceProposalService.getServiceProposalsByServiceId(id);
+
+        return proposals;
+    }
+
+    @Override
+    public List<ProviderResponseDTO> getProvidersByServiceId(int id) {
+        if(getById(id)==null)
+            throw new ServiceNotFoundException("There is no service with this id");
+
+
+        List<ProviderResponseDTO> providers=providerService.getProvidersByServiceId(id);
+
+        return providers;
     }
 }

@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ProviderRespoonseDTO {
+public class ProviderResponseDTO {
 
     private int id;
 

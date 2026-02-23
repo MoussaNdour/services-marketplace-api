@@ -2,7 +2,7 @@ package com.example.marketplace.service.implementations;
 
 import com.example.marketplace.dto.request.*;
 import com.example.marketplace.dto.response.ClientResponseDTO;
-import com.example.marketplace.dto.response.ProviderRespoonseDTO;
+import com.example.marketplace.dto.response.ProviderResponseDTO;
 import com.example.marketplace.entity.Client;
 import com.example.marketplace.entity.Provider;
 import com.example.marketplace.entity.User;
@@ -104,7 +104,7 @@ public class AuthService implements AuthServiceInterface {
 
     @Transactional
     @Override
-    public ProviderRespoonseDTO registerProvider(ProviderRequestDTO provider) {
+    public ProviderResponseDTO registerProvider(ProviderRequestDTO provider) {
         if(!isEmailFree((provider.getEmail())))
             throw new EmailAlreadyUserException("There is already an account with this email.");
         else{
