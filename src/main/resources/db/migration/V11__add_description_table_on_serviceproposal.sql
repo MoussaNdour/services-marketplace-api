@@ -1,0 +1,1 @@
+alter table serviceProposal add column description text not null;
