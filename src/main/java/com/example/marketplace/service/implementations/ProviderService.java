@@ -2,12 +2,15 @@ package com.example.marketplace.service.implementations;
 
 import com.example.marketplace.dto.request.ProviderRequestDTO;
 import com.example.marketplace.dto.response.ProviderResponseDTO;
+import com.example.marketplace.dto.response.ServiceResponseDTO;
 import com.example.marketplace.entity.Provider;
+import com.example.marketplace.entity.User;
 import com.example.marketplace.exception.ProviderNotFoundException;
 import com.example.marketplace.mapper.request.ProviderRequestMapper;
 import com.example.marketplace.mapper.response.ProviderResponseMapper;
 import com.example.marketplace.repository.ProviderRepository;
 import com.example.marketplace.service.interfaces.ProviderServiceInterface;
+import com.example.marketplace.service.interfaces.ServiceForServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,9 @@ public class ProviderService implements ProviderServiceInterface {
 
     @Autowired
     ProviderResponseMapper responseMapper;
+
+    @Autowired
+    ServiceForServiceInterface serviceForService;
 
     @Override
     public ProviderResponseDTO save(ProviderRequestDTO dto) {
@@ -73,14 +79,11 @@ public class ProviderService implements ProviderServiceInterface {
             return responseMapper.toDTO(provider);
     }
 
+
+
     @Override
-    public List<ProviderResponseDTO> getProvidersByServiceId(int id) {
-        List<ProviderResponseDTO> providers = new ArrayList<>();
-
-        for(Provider provider:repository.findByServiceProposalServiceId(id)){
-            providers.add(responseMapper.toDTO(provider));
-        }
-
-        return providers;
+    public List<ServiceResponseDTO> getAllServicesByProvider(User user) {
+        return serviceForService.getAllServicesByProvider(user.getEmail());
     }
+
 }

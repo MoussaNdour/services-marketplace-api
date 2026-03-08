@@ -10,6 +10,5 @@ import org.mapstruct.Mapping;
 public interface ServiceProposalRequestMapper {
 
     @Mapping(source = "idservice", target = "service.id")
-    @Mapping(source = "idprovider", target = "provider.id")
     ServiceProposal toEntity(ServiceProposalRequestDTO dto);
 }

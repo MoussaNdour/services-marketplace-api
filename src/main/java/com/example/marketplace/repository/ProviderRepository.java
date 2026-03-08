@@ -19,4 +19,6 @@ public interface ProviderRepository extends CrudRepository<Provider,Integer> {
             nativeQuery = true
     )
     List<Provider> findByServiceProposalServiceId(@Param("serviceId") int serviceId);
+
+
 }

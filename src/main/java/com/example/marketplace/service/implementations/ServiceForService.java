@@ -41,8 +41,6 @@ public class ServiceForService implements ServiceForServiceInterface {
     @Autowired
     ServiceProposalServiceInterface serviceProposalService;
 
-    @Autowired
-    ProviderServiceInterface providerService;
 
     @Override
     public ServiceResponseDTO save(ServiceRequestDTO dto) {
@@ -111,14 +109,18 @@ public class ServiceForService implements ServiceForServiceInterface {
         return proposals;
     }
 
+
+
     @Override
-    public List<ProviderResponseDTO> getProvidersByServiceId(int id) {
-        if(getById(id)==null)
-            throw new ServiceNotFoundException("There is no service with this id");
+    public List<ServiceResponseDTO> getAllServicesByProvider(String email) {
+        List<ServiceResponseDTO> services=new ArrayList<>();
 
+        for(com.example.marketplace.entity.Service service:repos.getAllByProviderEmail(email)){
+            services.add(responseMapper.toDTO(service));
+        }
 
-        List<ProviderResponseDTO> providers=providerService.getProvidersByServiceId(id);
-
-        return providers;
+        return services;
     }
+
+
 }

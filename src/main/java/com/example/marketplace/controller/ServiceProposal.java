@@ -37,8 +37,8 @@ public class ServiceProposal {
             }
     )
     @PostMapping("/service-proposals")
-    public ResponseEntity proposeService(@Valid @RequestBody ServiceProposalRequestDTO dto, @AuthenticationPrincipal User user){
-        service.saveServiceProposal(dto,user);
+    public ResponseEntity proposeService(@Valid @RequestBody ServiceProposalRequestDTO dto){
+        service.save(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Service proposal saved");
     }

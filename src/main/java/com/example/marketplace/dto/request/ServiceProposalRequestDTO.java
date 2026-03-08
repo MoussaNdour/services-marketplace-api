@@ -13,6 +13,4 @@ public class ServiceProposalRequestDTO {
     @Min(value = 1, message = "This key is invalide")
     private int idservice;
 
-    @Min(value = 1, message = "This key is invalid")
-    private int idprovider;
 }
