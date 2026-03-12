@@ -63,7 +63,7 @@ public class JwtService {
     }
 
     public String extractRole(String token) {
-        // La lambda est la Function<Claims, String>
+
         return extractClaim(token, claims -> claims.get("role", String.class));
     }
 
@@ -93,4 +93,14 @@ public class JwtService {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
+    public boolean isRefreshTokenValid(String token) {
+        try {
+
+            Date expiration = extractExpiration(token);
+            return expiration.after(new Date());
+
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
 }

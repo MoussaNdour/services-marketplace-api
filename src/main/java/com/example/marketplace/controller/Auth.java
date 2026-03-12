@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin(origins="http://localhost:8000",methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.OPTIONS})
-@RequestMapping("/api/auth")
+@RequestMapping("/api/public/auth")
 public class Auth {
 
 
@@ -65,13 +65,10 @@ public class Auth {
         return ResponseEntity.ok(service.registerUser(request));
     }
 
-    @Operation(
-        security = {@SecurityRequirement(name = "bearerAuth")}
-    )
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/refresh-token")
-    public ResponseEntity<String> refreshToken(@AuthenticationPrincipal User user){
-        return ResponseEntity.ok(service.refreshToken(user));
+
+    @GetMapping("/refresh")
+    public ResponseEntity<String> refreshToken(@RequestBody @Valid Payload payload){
+        return ResponseEntity.ok(service.refreshToken(payload));
     }
 
 }

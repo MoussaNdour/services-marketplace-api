@@ -95,4 +95,9 @@ public class GlobalExceptionHandler {
     {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
+
+    @ExceptionHandler(RefreshTokenException.class)
+    public ResponseEntity<String> handleRefeshTokenException(RefreshTokenException e){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
 }

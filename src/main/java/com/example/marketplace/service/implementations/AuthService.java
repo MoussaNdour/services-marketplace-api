@@ -7,6 +7,7 @@ import com.example.marketplace.entity.Client;
 import com.example.marketplace.entity.Provider;
 import com.example.marketplace.entity.User;
 import com.example.marketplace.exception.EmailAlreadyUserException;
+import com.example.marketplace.exception.RefreshTokenException;
 import com.example.marketplace.exception.UnauthorizedUserRoleException;
 import com.example.marketplace.mapper.request.ClientRequestMapper;
 import com.example.marketplace.mapper.request.ProviderRequestMapper;
@@ -28,6 +29,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.marketplace.dto.response.*;
+
+import java.util.Date;
 
 
 @Service
@@ -159,6 +162,17 @@ public class AuthService implements AuthServiceInterface {
                 .build();
     }
 
+    @Override
+    public String refreshToken(Payload payload) {
+        String refreshToken = payload.getRefreshToken();
+        if(jwtService.isRefreshTokenValid(refreshToken)){
+            return jwtService.generateToken(jwtService.extractUsername(refreshToken), jwtService.extractRole(refreshToken));
+        }
+        else{
+            throw new RefreshTokenException("Refresh token expired");
+        }
+    }
+
 
     private Object findProfileByRole(String email, String role) {
         return switch (role) {
@@ -170,10 +184,7 @@ public class AuthService implements AuthServiceInterface {
     }
 
 
-    @Override
-    public String refreshToken(User user) {
-        return jwtService.generateToken(user.getEmail(),user.getRole());
-    }
+
 
     @Override
     public Object registerUser(RegistrationRequest request) {

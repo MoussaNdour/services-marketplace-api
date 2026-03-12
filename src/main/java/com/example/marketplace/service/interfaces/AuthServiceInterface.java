@@ -16,7 +16,7 @@ public interface AuthServiceInterface {
 
     LoginResponseDTO connect(Login login);
 
-    String refreshToken(User user);
+    String refreshToken(Payload payload);
 
     Object registerUser(RegistrationRequest request);
 }

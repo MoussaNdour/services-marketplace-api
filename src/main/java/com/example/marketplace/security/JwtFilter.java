@@ -54,17 +54,17 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
             }
             catch(ExpiredJwtException e){
-                // Token expiré → rejeter la requête
+
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json");
                 response.getWriter().write("{\"error\": \"Token expired\"}");
-                return; // arrêter la chaine de filtres
+                return;
             }
             catch (JwtException e){
-                // Autres erreurs de token
+
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json");
-                response.getWriter().write("{\"error\": \"Token invalide\"}");
+                response.getWriter().write("{\"error\": \"Token invalid\"}");
                 return;
             }
 
@@ -77,6 +77,6 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getServletPath();
-        return path.startsWith("/api/public/") || path.startsWith("/api/auth/");
+        return path.startsWith("/api/public/");
     }
 }
