@@ -16,7 +16,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins="http://localhost:8000",methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.OPTIONS})
 public class Provider {
 
     @Autowired
@@ -66,7 +65,7 @@ public class Provider {
     @PreAuthorize("hasRole('PROVIDER')")
     @GetMapping("/provider/{email}/services")
     public ResponseEntity<List<ServiceResponseDTO>> getServicesByProvider(@PathVariable String email,@AuthenticationPrincipal User user){
-        return ResponseEntity.ok(service.getAllServicesByProvider(user));
+        return ResponseEntity.ok(service.getAllServicesByProvider(user,email));
     }
 
 }

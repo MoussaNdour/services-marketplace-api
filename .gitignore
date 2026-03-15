@@ -38,3 +38,4 @@ docker-compose.yml
 Dockerfile
 /uploads
 ubuntu_commands.txt
+.env

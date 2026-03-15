@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@CrossOrigin(origins="http://localhost:8000",methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.OPTIONS})
 @RequestMapping("/api/public/auth")
 public class Auth {
 

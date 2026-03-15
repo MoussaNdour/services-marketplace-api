@@ -5,6 +5,7 @@ import com.example.marketplace.dto.response.ProviderResponseDTO;
 import com.example.marketplace.dto.response.ServiceResponseDTO;
 import com.example.marketplace.entity.Provider;
 import com.example.marketplace.entity.User;
+import com.example.marketplace.exception.ForbiddenOperationException;
 import com.example.marketplace.exception.ProviderNotFoundException;
 import com.example.marketplace.mapper.request.ProviderRequestMapper;
 import com.example.marketplace.mapper.response.ProviderResponseMapper;
@@ -82,7 +83,9 @@ public class ProviderService implements ProviderServiceInterface {
 
 
     @Override
-    public List<ServiceResponseDTO> getAllServicesByProvider(User user) {
+    public List<ServiceResponseDTO> getAllServicesByProvider(User user,String email) {
+        if(!email.equals(user.getEmail()))
+            throw new ForbiddenOperationException("This user is not authorized to access to others users' datas");
         return serviceForService.getAllServicesByProvider(user.getEmail());
     }
 
