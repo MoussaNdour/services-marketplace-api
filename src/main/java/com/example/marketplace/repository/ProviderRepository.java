@@ -14,11 +14,7 @@ public interface ProviderRepository extends CrudRepository<Provider,Integer> {
 
     Optional<Provider> findByUserEmail(String email);
 
-    @Query(
-            value = "SELECT * FROM provider WHERE id IN (SELECT provider FROM serviceProposal WHERE service = :serviceId)",
-            nativeQuery = true
-    )
-    List<Provider> findByServiceProposalServiceId(@Param("serviceId") int serviceId);
-
+    @Query("SELECT p FROM Provider p JOIN ServiceProposal sp ON sp.provider.id = p.id WHERE sp.service.id = :serviceId")
+    List<Provider> findProvidersByServiceId(@Param("serviceId") int serviceId);
 
 }

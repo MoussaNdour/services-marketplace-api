@@ -85,7 +85,7 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
     public List<ServiceProposalResponseDTO> getServicesProposalByIdProvider(int idprovider) {
         List<ServiceProposalResponseDTO> serviceProposals=new ArrayList<>();
 
-        for(ServiceProposal serviceProposal:repository.getServiceProposalsByIdProvider(idprovider))
+        for(ServiceProposal serviceProposal:repository.findByProviderId(idprovider))
         {
             serviceProposals.add(responseMapper.toDTO(serviceProposal));
         }
@@ -93,15 +93,6 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
         return serviceProposals;
     }
 
-
-    @Override
-    public ServiceProposalResponseDTO getServiceProposalByServiceIdAndProviderId(int serviceid, int providerid) {
-        ServiceProposal serviceProposal=repository.getServiceProposalByServiceIdAndProviderId(serviceid,providerid).orElseThrow(
-                ()->new ServiceProposalNotFoundException("Service proposal not found")
-        );
-
-        return responseMapper.toDTO(serviceProposal);
-    }
 
     @Override
     public List<ServiceProposalResponseDTO> getServiceProposalsByServiceId(int serviceId) {

@@ -12,20 +12,13 @@ import java.util.Optional;
 
 public interface ServiceProposalRepository extends CrudRepository<ServiceProposal,Integer> {
 
-    @Query(
-            value = "SELECT * FROM serviceProposal WHERE provider = :idprovider",
-            nativeQuery = true
-    )
-    Iterable<ServiceProposal> getServiceProposalsByIdProvider(
-            @Param("idprovider") int idprovider
+
+    Iterable<ServiceProposal> findByProviderId(
+            int idprovider
     );
 
     List<ServiceProposal> findByServiceId(int serviceId);
 
 
-    @Query(
-            value = "SELECT * from serviceProposal WHERE provider =:idprovider and service =:idservice",
-            nativeQuery = true
-    )
-    Optional<ServiceProposal> getServiceProposalByServiceIdAndProviderId(@Param("idservice") int idservice, @Param("idprovider") int idprovider);
+    Optional<ServiceProposal> findByServiceIdAndProviderId(int serviceId, int providerId);
 }

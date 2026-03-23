@@ -38,7 +38,7 @@ public class CategoryService implements CategoryServiceInterface {
     @Override
     public CategoryResponseDTO save(CategoryRequestDTO dto) {
 
-        if(categoryRepository.findCategoryByName(dto.getName())!=null)
+        if(categoryRepository.findByName(dto.getName())!=null)
             throw new CategoryAlreadyExistException("This category already exist");
         else{
             CategoryResponseDTO response=categoryResponseMapper.toDTO(categoryRepository.save(categoryRequestMapper.toEntity(dto)));

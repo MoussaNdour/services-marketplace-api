@@ -2,24 +2,23 @@ package com.example.marketplace.controller;
 
 
 import com.example.marketplace.dto.request.*;
-import com.example.marketplace.entity.User;
 import com.example.marketplace.service.interfaces.AuthServiceInterface;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
 
 import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 @RequestMapping("/api/public/auth")
+@Slf4j
 public class Auth {
 
 
@@ -47,6 +46,7 @@ public class Auth {
     )
     @PostMapping("/connect")
     public ResponseEntity connection(@RequestBody @Valid Login user){
+        log.info("User with email: {} trying to connect",user.getEmail());
         return ResponseEntity.ok(service.connect(user));
     }
 

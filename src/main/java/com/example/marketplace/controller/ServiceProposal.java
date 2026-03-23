@@ -72,21 +72,7 @@ public class ServiceProposal {
     }
 
 
-//    @Operation(
-//            summary = "",
-//            security = {  },
-//            description = "",
-//            responses = {
-//                    @ApiResponse(
-//                            description = "",
-//                            responseCode = ""
-//                    )
-//            }
-//    )
-//    @GetMapping("/service-proposal/{serviceid}/{providerid}")
-//    public ResponseEntity getServiceProposalByServiceIdAndProviderId(@PathVariable int serviceid, @PathVariable int providerid){
-//        return ResponseEntity.ok(service.getServiceProposalByServiceIdAndProviderId(serviceid,providerid));
-//    }
+
 
 
     @Operation(

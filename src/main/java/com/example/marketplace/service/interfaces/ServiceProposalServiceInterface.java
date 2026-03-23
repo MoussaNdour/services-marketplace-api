@@ -7,6 +7,5 @@ import java.util.List;
 
 public interface ServiceProposalServiceInterface extends GeneralInterface<ServiceProposalRequestDTO, ServiceProposalResponseDTO>{
     List<ServiceProposalResponseDTO> getServicesProposalByIdProvider(int idprovider);
-    ServiceProposalResponseDTO getServiceProposalByServiceIdAndProviderId(int serviceid, int providerid);
     List<ServiceProposalResponseDTO> getServiceProposalsByServiceId(int serviceId);
 }
