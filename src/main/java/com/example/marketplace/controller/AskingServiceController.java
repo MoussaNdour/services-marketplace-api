@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-public class AskingService {
+public class AskingServiceController {
 
     @Autowired
     ServiceAsking_ServiceInterface service;

@@ -42,12 +42,6 @@ public class CategoryService implements CategoryServiceInterface {
             throw new CategoryAlreadyExistException("This category already exist");
         else{
             CategoryResponseDTO response=categoryResponseMapper.toDTO(categoryRepository.save(categoryRequestMapper.toEntity(dto)));
-            Map<String,Map<String,String>> links=new HashMap<>();
-            Map<String,String> self=new HashMap<>();
-            self.put("href","categories/"+response.getId());
-
-            links.put("self",self);
-            response.set_links(links);
 
             return response;
         }
@@ -61,13 +55,7 @@ public class CategoryService implements CategoryServiceInterface {
         for(Category category:categoryRepository.findAll())
         {
             CategoryResponseDTO response=categoryResponseMapper.toDTO(category);
-            Map<String,Map<String,String>> links=new HashMap<>();
-            Map<String,String> self=new HashMap<>();
-            self.put("href","categories/"+response.getId());
 
-            links.put("self",self);
-
-            response.set_links(links);
 
             categories.add(response);
         }
@@ -83,13 +71,6 @@ public class CategoryService implements CategoryServiceInterface {
             throw new CategoryNotFoundException("There no category with this id");
         else{
             CategoryResponseDTO response=categoryResponseMapper.toDTO(category);
-
-            Map<String,Map<String,String>> links=new HashMap<>();
-            Map<String,String> self=new HashMap<>();
-            self.put("href","categories/"+response.getId());
-
-            links.put("self",self);
-            response.set_links(links);
 
             return response;
         }

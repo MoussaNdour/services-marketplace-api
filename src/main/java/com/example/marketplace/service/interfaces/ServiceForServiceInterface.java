@@ -14,5 +14,6 @@ public interface ServiceForServiceInterface extends GeneralInterface<ServiceRequ
 
     List<ServiceProposalResponseDTO> getProposalsByServiceId(int id);
 
-    List<ServiceResponseDTO> getAllServicesByProvider(String email);
+
+    boolean findServiceByName(String name);
 }

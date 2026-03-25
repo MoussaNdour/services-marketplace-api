@@ -8,9 +8,5 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface AskingServiceResponseMapper {
-
-    @Mapping(source = "proposal.service.name", target = "serviceName")
-    @Mapping(source = "client.firstname", target = "clientFirstName")
-    @Mapping(source = "client.lastname", target = "clientLastName")
     AskingServiceResponseDTO toDTO(AskingService entity);
 }

@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-public class Provider {
+public class ProviderController {
 
     @Autowired
     ProviderServiceInterface service;
@@ -51,10 +51,10 @@ public class Provider {
                     )
             }
     )
-    @GetMapping("/public/provider/{idprovider}")
-    public ResponseEntity getProviderById(@PathVariable int idprovider){
+    @GetMapping("/public/provider/{id}")
+    public ResponseEntity getProviderById(@PathVariable int id){
 
-        return ResponseEntity.ok(service.getById(idprovider));
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @Operation(

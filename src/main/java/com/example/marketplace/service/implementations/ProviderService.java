@@ -9,7 +9,9 @@ import com.example.marketplace.exception.ForbiddenOperationException;
 import com.example.marketplace.exception.ProviderNotFoundException;
 import com.example.marketplace.mapper.request.ProviderRequestMapper;
 import com.example.marketplace.mapper.response.ProviderResponseMapper;
+import com.example.marketplace.mapper.response.ServiceResponseMapper;
 import com.example.marketplace.repository.ProviderRepository;
+import com.example.marketplace.repository.ServiceRepository;
 import com.example.marketplace.service.interfaces.ProviderServiceInterface;
 import com.example.marketplace.service.interfaces.ServiceForServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,28 +23,33 @@ import java.util.List;
 @Service
 public class ProviderService implements ProviderServiceInterface {
 
-    @Autowired
-    ProviderRepository repository;
 
-    @Autowired
-    ProviderRequestMapper requestMapper;
+    private final ProviderRepository repos;
 
-    @Autowired
-    ProviderResponseMapper responseMapper;
+    private final ProviderResponseMapper responseMapper;
 
-    @Autowired
-    ServiceForServiceInterface serviceForService;
+    private final ServiceRepository serviceRepos;
+
+    private final ServiceResponseMapper serviceResponseMapper;
+
+    public ProviderService(ProviderRepository repos,ProviderResponseMapper responseMapper,ServiceRepository serviceRepos,ServiceResponseMapper serviceResponseMapper){
+        this.repos=repos;
+        this.responseMapper=responseMapper;
+        this.serviceRepos=serviceRepos;
+        this.serviceResponseMapper=serviceResponseMapper;
+    }
+
 
     @Override
     public ProviderResponseDTO save(ProviderRequestDTO dto) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<ProviderResponseDTO> getAll() {
         List<ProviderResponseDTO> providers=new ArrayList<>();
 
-        for(Provider provider:repository.findAll()){
+        for(Provider provider:repos.findAll()){
 
             providers.add(responseMapper.toDTO(provider));
         }
@@ -53,7 +60,7 @@ public class ProviderService implements ProviderServiceInterface {
     @Override
     public ProviderResponseDTO getById(int id) {
 
-        Provider provider=repository.findById(id).orElseThrow(
+        Provider provider=repos.findById(id).orElseThrow(
                 ()->new ProviderNotFoundException("Provider not found for this id")
         );
 
@@ -62,22 +69,22 @@ public class ProviderService implements ProviderServiceInterface {
 
     @Override
     public void deleteById(int id) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void disableAccount(String email) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public ProviderResponseDTO getByEmail(String email) {
-        Provider provider=repository.findByUserEmail(email).orElse(null);
+        Provider provider=repos.findByUserEmail(email).orElseThrow(
+                () -> new ProviderNotFoundException("Provider not found for this email")
+        );
 
-        if(provider==null)
-            return null;
-        else
-            return responseMapper.toDTO(provider);
+
+        return responseMapper.toDTO(provider);
     }
 
 
@@ -86,7 +93,15 @@ public class ProviderService implements ProviderServiceInterface {
     public List<ServiceResponseDTO> getAllServicesByProvider(User user,String email) {
         if(!email.equals(user.getEmail()))
             throw new ForbiddenOperationException("This user is not authorized to access to others users' datas");
-        return serviceForService.getAllServicesByProvider(user.getEmail());
+
+        List<ServiceResponseDTO> services = new ArrayList<>();
+
+        for(com.example.marketplace.entity.Service service: serviceRepos.getAllByProviderEmail(email))
+        {
+            services.add(serviceResponseMapper.toDTO(service));
+        }
+
+        return services;
     }
 
 }

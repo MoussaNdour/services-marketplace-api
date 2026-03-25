@@ -100,4 +100,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleRefeshTokenException(RefreshTokenException e){
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
+
+    @ExceptionHandler(ServiceAlreadyExistingException.class)
+    public ResponseEntity<String> handleServiceAlreadyExistException(ServiceAlreadyExistingException e){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
 }

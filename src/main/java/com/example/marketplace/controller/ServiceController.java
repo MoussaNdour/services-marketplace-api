@@ -21,7 +21,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-public class Service {
+public class ServiceController {
 
     @Autowired
     ServiceForServiceInterface service;
@@ -66,12 +66,7 @@ public class Service {
     )
     @GetMapping("/public/services/{id}")
     public ResponseEntity getServiceById(@PathVariable int id){
-        ServiceResponseDTO dto=service.getById(id);
-
-        if(dto==null)
-            return ResponseEntity.notFound().build();
-        else
-            return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @Operation(
@@ -93,38 +88,10 @@ public class Service {
     )
     @PostMapping("/services")
     public ResponseEntity createService(@RequestBody @Valid ServiceRequestDTO dto){
-        ServiceResponseDTO responseDTO=service.save(dto);
-
-        Map<String,Object> response=new HashMap<>();
-
-        if(responseDTO==null)
-            return ResponseEntity.status(401).build();
-        else
-        {
-            response.put("service",responseDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        }
-
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(dto));
     }
 
-//    @Operation(
-//            summary = "Retrieve all Providers providing an specific service",
-//            description = "This endpoint allow to retrieve all providers providing an specific service by using the id of the service",
-//            responses = {
-//                    @ApiResponse(
-//                            responseCode = "404",
-//                            description = "No service owning this id"
-//                    ),
-//                    @ApiResponse(
-//                            responseCode = "200",
-//                            description = "retrieved all providers in a list even if there is no provider, you gonna get a blank list"
-//                    )
-//            }
-//    )
-//    @GetMapping("/public/services/{serviceId}/providers")
-//    public ResponseEntity getProvidersByServiceId(@PathVariable int serviceId){
-//        return ResponseEntity.ok(service.getProvidersByServiceId(serviceId));
-//    }
+
 
     @GetMapping("/public/services/{id}/proposals")
     public ResponseEntity getProposalsByServiceId(@PathVariable int id){

@@ -3,39 +3,63 @@ package com.example.marketplace.service.implementations;
 import com.example.marketplace.dto.request.ServiceProposalRequestDTO;
 import com.example.marketplace.dto.response.ProviderResponseDTO;
 import com.example.marketplace.dto.response.ServiceProposalResponseDTO;
+import com.example.marketplace.dto.response.ServiceResponseDTO;
 import com.example.marketplace.entity.Provider;
 import com.example.marketplace.entity.Service;
 import com.example.marketplace.entity.ServiceProposal;
 import com.example.marketplace.entity.User;
 import com.example.marketplace.exception.*;
 import com.example.marketplace.mapper.request.ServiceProposalRequestMapper;
+import com.example.marketplace.mapper.response.ProviderResponseMapper;
 import com.example.marketplace.mapper.response.ServiceProposalResponseMapper;
+import com.example.marketplace.mapper.response.ServiceResponseMapper;
 import com.example.marketplace.repository.ProviderRepository;
 import com.example.marketplace.repository.ServiceProposalRepository;
-import com.example.marketplace.repository.ServiceRepository;
-import com.example.marketplace.service.interfaces.ProviderServiceInterface;
 import com.example.marketplace.service.interfaces.ServiceProposalServiceInterface;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import com.example.marketplace.repository.ServiceRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @org.springframework.stereotype.Service
 public class ServiceProposalService implements ServiceProposalServiceInterface {
 
-    @Autowired
-    ServiceProposalRepository repository;
 
-    @Autowired
-    ServiceProposalRequestMapper requestMapper;
+    private final ServiceProposalRepository repos;
 
-    @Autowired
-    ServiceProposalResponseMapper responseMapper;
+    private final ServiceProposalRequestMapper requestMapper;
 
-    @Autowired
-    ProviderRepository providerRepository;
+    private final ServiceProposalResponseMapper responseMapper;
+
+    private final ProviderRepository providerRepository;
+
+    private final ProviderResponseMapper providerResponseMapper;
+
+    private final ServiceRepository serviceRepos;
+
+    private final ServiceResponseMapper serviceResponseMapper;
+
+    public ServiceProposalService(
+            ServiceProposalRepository repos,
+            ServiceProposalRequestMapper requestMapper,
+            ServiceProposalResponseMapper responseMapper,
+            ProviderRepository providerRepository,
+            ProviderResponseMapper providerResponseMapper,
+            ServiceRepository serviceRepos,
+            ServiceResponseMapper serviceResponseMapper
+            )
+    {
+        this.repos=repos;
+        this.requestMapper=requestMapper;
+        this.responseMapper=responseMapper;
+        this.providerRepository=providerRepository;
+        this.providerResponseMapper=providerResponseMapper;
+        this.serviceRepos=serviceRepos;
+        this.serviceResponseMapper=serviceResponseMapper;
+    }
 
     @Override
     public ServiceProposalResponseDTO save(ServiceProposalRequestDTO dto) {
@@ -50,14 +74,14 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
 
         proposal.setProvider(providerRepository.findByUserEmail(user.getEmail()).orElse(null));
 
-        return responseMapper.toDTO(repository.save(proposal));
+        return responseMapper.toDTO(repos.save(proposal));
     }
 
     @Override
     public List<ServiceProposalResponseDTO> getAll() {
         List<ServiceProposalResponseDTO> serviceProposals=new ArrayList<>();
 
-        for(ServiceProposal serviceProposal:repository.findAll())
+        for(ServiceProposal serviceProposal:repos.findAll())
         {
             serviceProposals.add(responseMapper.toDTO(serviceProposal));
         }
@@ -67,8 +91,9 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
 
     @Override
     public ServiceProposalResponseDTO getById(int id) {
-        ServiceProposal serviceProposal=repository.findById(id).orElseThrow(
-                ()-> new ServiceNotFoundException("Service not found")
+
+        ServiceProposal serviceProposal=repos.findById(id).orElseThrow(
+                ()-> new ServiceNotFoundException("Proposal not found")
         );
 
         return responseMapper.toDTO(serviceProposal);
@@ -76,7 +101,7 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
 
     @Override
     public void deleteById(int id) {
-        repository.deleteById(id);
+        repos.deleteById(id);
     }
 
 
@@ -85,7 +110,7 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
     public List<ServiceProposalResponseDTO> getServicesProposalByIdProvider(int idprovider) {
         List<ServiceProposalResponseDTO> serviceProposals=new ArrayList<>();
 
-        for(ServiceProposal serviceProposal:repository.findByProviderId(idprovider))
+        for(ServiceProposal serviceProposal:repos.findByProviderId(idprovider))
         {
             serviceProposals.add(responseMapper.toDTO(serviceProposal));
         }
@@ -94,15 +119,28 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
     }
 
 
+
+
     @Override
-    public List<ServiceProposalResponseDTO> getServiceProposalsByServiceId(int serviceId) {
-        List<ServiceProposalResponseDTO> proposals=new ArrayList<>();
+    public ProviderResponseDTO getProviderOfProposal(int id) {
+        Optional<Provider> provider = providerRepository.getByProposalId(id);
 
-        for(ServiceProposal proposal:repository.findByServiceId(serviceId)){
-            proposals.add(responseMapper.toDTO(proposal));
-        }
+        if(provider.isPresent())
+            return providerResponseMapper.toDTO(provider.get());
+        else
+            throw new ProviderNotFoundException("Provider not found for this proposal");
 
-        return proposals;
+    }
+
+    @Override
+    public ServiceResponseDTO getServiceOfProposal(int id) {
+        Optional<Service> service = serviceRepos.getByProposalId(id);
+
+        if(service.isPresent())
+            return serviceResponseMapper.toDTO(service.get());
+        else
+            throw new ServiceNotFoundException("Service not found for this proposal");
+
     }
 
 }

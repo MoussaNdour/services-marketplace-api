@@ -17,7 +17,4 @@ public class CategoryResponseDTO {
     private int id;
 
     private String name;
-
-    @JsonProperty("_links")
-    private Map<String,Map<String,String>> _links;
  }

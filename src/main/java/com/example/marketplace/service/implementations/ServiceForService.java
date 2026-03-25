@@ -7,11 +7,14 @@ import com.example.marketplace.dto.response.ServiceResponseDTO;
 import com.example.marketplace.entity.Provider;
 import com.example.marketplace.entity.ServiceProposal;
 import com.example.marketplace.exception.NonexistingImageException;
+import com.example.marketplace.exception.ServiceAlreadyExistingException;
 import com.example.marketplace.exception.ServiceNotFoundException;
 import com.example.marketplace.mapper.request.ServiceRequestMapper;
 import com.example.marketplace.mapper.response.ProviderResponseMapper;
+import com.example.marketplace.mapper.response.ServiceProposalResponseMapper;
 import com.example.marketplace.mapper.response.ServiceResponseMapper;
 import com.example.marketplace.repository.ImageRepository;
+import com.example.marketplace.repository.ServiceProposalRepository;
 import com.example.marketplace.repository.ServiceRepository;
 import com.example.marketplace.service.interfaces.ProviderServiceInterface;
 import com.example.marketplace.service.interfaces.ServiceForServiceInterface;
@@ -26,20 +29,27 @@ import java.util.List;
 @Service
 public class ServiceForService implements ServiceForServiceInterface {
 
-    @Autowired
-    ServiceRepository repos;
+    private final ServiceRepository repos;
 
-    @Autowired
-    ServiceRequestMapper requestMapper;
+    private final ServiceRequestMapper requestMapper;
 
-    @Autowired
-    ServiceResponseMapper responseMapper;
+    private final ServiceResponseMapper responseMapper;
 
-    @Autowired
-    ImageRepository imageRepository;
+    private final ImageRepository imageRepository;
 
-    @Autowired
-    ServiceProposalServiceInterface serviceProposalService;
+    private final ServiceProposalRepository proposalRepos;
+
+    private final ServiceProposalResponseMapper proposalResponseMapper;
+
+    public ServiceForService(ServiceRepository repos, ServiceRequestMapper requestMapper, ServiceResponseMapper responseMapper, ImageRepository imageRepos, ServiceProposalRepository proposalRepos,ServiceProposalResponseMapper proposalResponseMapper)
+    {
+        this.repos=repos;
+        this.requestMapper=requestMapper;
+        this.responseMapper=responseMapper;
+        this.imageRepository=imageRepos;
+        this.proposalRepos=proposalRepos;
+        this.proposalResponseMapper=proposalResponseMapper;
+    }
 
 
     @Override
@@ -47,16 +57,16 @@ public class ServiceForService implements ServiceForServiceInterface {
 
         imageRepository.findById(dto.getIdImage()).orElseThrow(()->new NonexistingImageException("Image not existing for the id " + dto.getIdImage()));
 
+        if(findServiceByName(dto.getName()))
+            throw new ServiceAlreadyExistingException("This service already exist and cannot be created again");
 
         com.example.marketplace.entity.Service service=requestMapper.toEntity(dto);
         service.setCreatedAt(new Date());
         service=repos.save(service);
 
-        if(service==null)
-            return null;
-        else{
-            return responseMapper.toDTO(service);
-        }
+
+        return responseMapper.toDTO(service);
+
     }
 
     @Override
@@ -72,13 +82,12 @@ public class ServiceForService implements ServiceForServiceInterface {
 
     @Override
     public ServiceResponseDTO getById(int id) {
-        com.example.marketplace.entity.Service service=repos.findById(id).orElse(null);
+        com.example.marketplace.entity.Service service=repos.findById(id).orElseThrow(
+                ()->new ServiceNotFoundException("Service not found for this id")
+        );
 
-        if(service==null)
-            return null;
-        else{
-            return responseMapper.toDTO(service);
-        }
+        return responseMapper.toDTO(service);
+
     }
 
     @Override
@@ -89,7 +98,6 @@ public class ServiceForService implements ServiceForServiceInterface {
 
     @Override
     public List<ServiceResponseDTO> searchService(String name) {
-
         List<ServiceResponseDTO> results=new ArrayList<>();
 
         for(com.example.marketplace.entity.Service service:repos.searchService(name)){
@@ -104,22 +112,22 @@ public class ServiceForService implements ServiceForServiceInterface {
         if(getById(id)==null)
             throw new ServiceNotFoundException("There is no service with this id");
 
-        List<ServiceProposalResponseDTO> proposals = serviceProposalService.getServiceProposalsByServiceId(id);
+        List<ServiceProposalResponseDTO> proposals = new ArrayList<>();
+
+        for(ServiceProposal proposal:proposalRepos.findByServiceId(id)){
+            proposals.add(proposalResponseMapper.toDTO(proposal));
+        }
 
         return proposals;
     }
 
 
 
+
+
     @Override
-    public List<ServiceResponseDTO> getAllServicesByProvider(String email) {
-        List<ServiceResponseDTO> services=new ArrayList<>();
-
-        for(com.example.marketplace.entity.Service service:repos.getAllByProviderEmail(email)){
-            services.add(responseMapper.toDTO(service));
-        }
-
-        return services;
+    public boolean findServiceByName(String name) {
+        return repos.findByName(name).isPresent();
     }
 
 

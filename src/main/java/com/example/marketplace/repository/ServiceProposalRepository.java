@@ -13,12 +13,8 @@ import java.util.Optional;
 public interface ServiceProposalRepository extends CrudRepository<ServiceProposal,Integer> {
 
 
-    Iterable<ServiceProposal> findByProviderId(
-            int idprovider
-    );
+    Iterable<ServiceProposal> findByProviderId(int idprovider);
 
     List<ServiceProposal> findByServiceId(int serviceId);
 
-
-    Optional<ServiceProposal> findByServiceIdAndProviderId(int serviceId, int providerId);
 }
