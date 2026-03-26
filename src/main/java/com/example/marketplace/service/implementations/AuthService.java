@@ -6,7 +6,7 @@ import com.example.marketplace.dto.response.ProviderResponseDTO;
 import com.example.marketplace.entity.Client;
 import com.example.marketplace.entity.Provider;
 import com.example.marketplace.entity.User;
-import com.example.marketplace.exception.EmailAlreadyUserException;
+import com.example.marketplace.exception.EmailAlreadyExistException;
 import com.example.marketplace.exception.RefreshTokenException;
 import com.example.marketplace.exception.UnauthorizedUserRoleException;
 import com.example.marketplace.mapper.request.ClientRequestMapper;
@@ -21,7 +21,6 @@ import com.example.marketplace.repository.UserRepository;
 import com.example.marketplace.service.JwtService;
 import com.example.marketplace.service.interfaces.AuthServiceInterface;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,64 +29,73 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.marketplace.dto.response.*;
 
-import java.util.Date;
 
 
 @Service
 public class AuthService implements AuthServiceInterface {
 
-    @Autowired
+
     UserRepository userRepository;
 
-    @Autowired
+
     ClientRepository clientRepository;
 
-    @Autowired
+
     ProviderRepository providerRepository;
 
-    @Autowired
     AdminRepository adminRepository;
 
-    @Autowired
+
     AdminResponseMapper adminResponseMapper;
 
-    @Autowired
+
     ClientRequestMapper clientRequestMapper;
 
-    @Autowired
+
     ClientResponseMapper clientResponseMapper;
 
-    @Autowired
+
     ProviderRequestMapper providerRequestMapper;
 
-    @Autowired
+
     ProviderResponseMapper providerResponseMapper;
 
 
-    @Autowired
     PasswordEncoder encoder;
 
-    @Autowired
+
     JwtService jwtService;
 
-    @Autowired
+
     AuthenticationManager authenticationManager;
+
+    public AuthService(UserRepository userRepository, ClientRepository clientRepository, ProviderRepository providerRepository, AdminRepository adminRepository, AdminResponseMapper adminResponseMapper, ClientRequestMapper clientRequestMapper, ClientResponseMapper clientResponseMapper, ProviderRequestMapper providerRequestMapper, ProviderResponseMapper providerResponseMapper, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtService jwtService) {
+        this.userRepository = userRepository;
+        this.clientRepository = clientRepository;
+        this.providerRepository = providerRepository;
+        this.adminRepository = adminRepository;
+        this.adminResponseMapper = adminResponseMapper;
+        this.clientRequestMapper = clientRequestMapper;
+        this.clientResponseMapper = clientResponseMapper;
+        this.providerRequestMapper = providerRequestMapper;
+        this.providerResponseMapper = providerResponseMapper;
+        this.encoder = encoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+    }
 
     @Override
     public boolean isEmailFree(String email) {
         User user=userRepository.findByEmail(email).orElse(null);
 
-        if(user==null)
-            return true;
-        else
-            return false;
+        return user==null;
     }
 
     @Transactional
     @Override
     public ClientResponseDTO registerClient(ClientRequestDTO client) {
         if(!isEmailFree(client.getEmail()))
-            throw new EmailAlreadyUserException("There is already an account with this email.");
+            throw new EmailAlreadyExistException("There is already an account with this email.");
         else{
             User user=new User();
             user.setRole("CLIENT");
@@ -109,7 +117,7 @@ public class AuthService implements AuthServiceInterface {
     @Override
     public ProviderResponseDTO registerProvider(ProviderRequestDTO provider) {
         if(!isEmailFree((provider.getEmail())))
-            throw new EmailAlreadyUserException("There is already an account with this email.");
+            throw new EmailAlreadyExistException("There is already an account with this email.");
         else{
             User user=new User();
             user.setRole("PROVIDER");

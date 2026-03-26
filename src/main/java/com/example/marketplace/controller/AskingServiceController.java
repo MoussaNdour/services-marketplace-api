@@ -31,7 +31,7 @@ public class AskingServiceController {
                     )
             }
     )
-    @GetMapping("/public/asking-service")
+    @GetMapping("/public/askingservices")
     public ResponseEntity getAllserviceAsking(){
         return ResponseEntity.ok(service.getAll());
     }
@@ -51,11 +51,22 @@ public class AskingServiceController {
                     )
             }
     )
-    @GetMapping("/public/asking-service/{id}")
+    @GetMapping("/public/askingservices/{id}")
     public ResponseEntity getServiceAskingById(@PathVariable int id){
         return ResponseEntity.ok(service.getById(id));
     }
 
+    @PreAuthorize("hasRole('CLIENT')")
+    @Operation(
+            summary="allow clients to retrieve their services askings",
+            description="",
+            security = {@SecurityRequirement(name = "bearerAuth")}
+    )
+    @GetMapping("/askingservices")
+    public ResponseEntity getMyAskings()
+    {
+        return ResponseEntity.ok("");
+    }
 
 
     @Operation(
@@ -74,7 +85,7 @@ public class AskingServiceController {
             }
     )
     @PreAuthorize("hasRole('CLIENT')")
-    @PostMapping("/asking-service")
+    @PostMapping("/askingservices")
     public ResponseEntity createServiceAsking(@RequestBody @Valid AskingServiceRequestDTO asking){
         return ResponseEntity.status(201).body(service.save(asking));
     }
@@ -94,7 +105,7 @@ public class AskingServiceController {
             }
     )
     @PreAuthorize("hasRole('CLIENT')")
-    @DeleteMapping("/public/asking-service/{id}")
+    @DeleteMapping("/public/askingservices/{id}")
     public ResponseEntity deleteServiceAsking(@PathVariable int id){
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
