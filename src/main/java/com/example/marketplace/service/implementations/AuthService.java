@@ -182,7 +182,7 @@ public class AuthService implements AuthServiceInterface {
     }
 
 
-    private Object findProfileByRole(String email, String role) {
+    public Object findProfileByRole(String email, String role) {
         return switch (role) {
             case "ADMIN" -> adminResponseMapper.toDTO(adminRepository.findByUserEmail(email).orElse(null));
             case "CLIENT" -> clientResponseMapper.toDTO(clientRepository.findByUserEmail(email).orElse(null));
@@ -190,8 +190,6 @@ public class AuthService implements AuthServiceInterface {
             default -> null;
         };
     }
-
-
 
 
     @Override
