@@ -123,7 +123,7 @@ public class AskingService implements AskingInterface {
         if(client.isPresent())
             return clientResponseMapper.toDTO(client.get());
         else
-            throw new IllegalArgumentException("Asking found but client not found.");
+            throw new IllegalStateException("Asking found but client not found.");
 
     }
 
@@ -136,6 +136,6 @@ public class AskingService implements AskingInterface {
         if(proposal.isPresent())
             return proposalResponseMapper.toDTO(proposal.get());
         else
-            throw new IllegalArgumentException("Asking found but no proposal was found");
+            throw new IllegalStateException("Asking found but no proposal was found");
     }
 }

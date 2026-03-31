@@ -3,9 +3,9 @@ package com.example.marketplace.service.implementations;
 import com.example.marketplace.dto.request.ClientRequestDTO;
 import com.example.marketplace.dto.request.Login;
 import com.example.marketplace.dto.request.ProviderRequestDTO;
-import com.example.marketplace.dto.response.AdminResponseDTO;
 import com.example.marketplace.dto.response.LoginResponseDTO;
 import com.example.marketplace.dto.response.ProviderResponseDTO;
+import com.example.marketplace.entity.Admin;
 import com.example.marketplace.entity.Client;
 import com.example.marketplace.entity.Provider;
 import com.example.marketplace.entity.User;
@@ -158,12 +158,7 @@ class AuthServiceTest {
         ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
         ArgumentCaptor<Client> clientArgumentCaptor = ArgumentCaptor.forClass(Client.class);
 
-        Client mapperReturn = new Client();
-        mapperReturn.setFirstname(client.getFirstname());
-        mapperReturn.setLastname(client.getLastname());
-        mapperReturn.setProfession(client.getProfession());
 
-        given(clientRequestMapper.toEntity(client)).willReturn(mapperReturn);
         given(encoder.encode(client.getPassword())).willReturn("$2a$10$l5gBHkQhCrcFiVojU3v7zu.uGGlfjFR1OdEmRUS70onVKw2azs4ru");
         given(userRepository.save(any())).willReturn(user);
         given(clientRepository.save(any())).willReturn(clientReposResponse);
@@ -342,8 +337,8 @@ class AuthServiceTest {
                 .role("ADMIN")
                 .build();
 
-        AdminResponseDTO mockProfile = new AdminResponseDTO();
-        mockProfile.setEmail(loginRequest.getEmail());
+        Admin mockProfile = new Admin();
+        mockProfile.setUser(mockUser);
         mockProfile.setId(1);
 
         Authentication auth = new UsernamePasswordAuthenticationToken(mockUser, null);
@@ -352,8 +347,7 @@ class AuthServiceTest {
                 .thenReturn(auth);
 
 
-        when(underTest.findProfileByRole("test@example.com", "ADMIN"))
-                .thenReturn(mockProfile);
+        when(adminRepository.findByUserEmail(anyString())).thenReturn(Optional.of(mockProfile));
 
         when(jwtService.generateToken(anyString(), anyString())).thenReturn("access-token");
         when(jwtService.generateRefreshToken(anyString(), anyString())).thenReturn("refresh-token");
@@ -364,7 +358,7 @@ class AuthServiceTest {
 
         assertNotNull(response);
         assertEquals("access-token", response.getToken());
-        assertEquals(mockProfile, response.getProfile());
+        assertEquals(adminResponseMapper.toDTO(mockProfile), response.getProfile());
 
         verify(authenticationManager).authenticate(any());
         verify(jwtService).generateToken(anyString(), anyString());
@@ -373,18 +367,20 @@ class AuthServiceTest {
     @Test
     void connect_ShouldThrowException_WhenProfileNotFound() {
         // Arrange
-        Login loginRequest = new Login("test@example.com", "password123");
-        User mockUser = User.builder().email("test@example.com").role("USER").build();
+        Login loginRequest = new Login("mndour428@gmail.com", "password123");
+        User mockUser = User.builder().email("mndour428@gmail.com").role("ADMIN").build();
         Authentication auth = new UsernamePasswordAuthenticationToken(mockUser, null);
 
         when(authenticationManager.authenticate(any())).thenReturn(auth);
         // On simule un profil inexistant
-        when(underTest.findProfileByRole(anyString(), anyString())).thenReturn(null);
+        when(adminRepository.findByUserEmail(anyString())).thenReturn(Optional.empty());
+
 
         // Act & Assert
-        assertThrows(IllegalStateException.class, () -> {
-            underTest.connect(loginRequest);
-        });
+        assertThatThrownBy(()->underTest.connect(loginRequest))
+                .isInstanceOf(IllegalStateException.class);
+
+
     }
 
 

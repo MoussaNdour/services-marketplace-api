@@ -37,35 +37,25 @@ public class AuthService implements AuthServiceInterface {
 
     UserRepository userRepository;
 
-
     ClientRepository clientRepository;
-
 
     ProviderRepository providerRepository;
 
     AdminRepository adminRepository;
 
-
     AdminResponseMapper adminResponseMapper;
-
 
     ClientRequestMapper clientRequestMapper;
 
-
     ClientResponseMapper clientResponseMapper;
-
 
     ProviderRequestMapper providerRequestMapper;
 
-
     ProviderResponseMapper providerResponseMapper;
-
 
     PasswordEncoder encoder;
 
-
     JwtService jwtService;
-
 
     AuthenticationManager authenticationManager;
 
@@ -184,9 +174,18 @@ public class AuthService implements AuthServiceInterface {
 
     public Object findProfileByRole(String email, String role) {
         return switch (role) {
-            case "ADMIN" -> adminResponseMapper.toDTO(adminRepository.findByUserEmail(email).orElse(null));
-            case "CLIENT" -> clientResponseMapper.toDTO(clientRepository.findByUserEmail(email).orElse(null));
-            case "PROVIDER" -> providerResponseMapper.toDTO(providerRepository.findByUserEmail(email).orElse(null));
+            case "ADMIN" -> adminRepository.findByUserEmail(email)
+                    .map(adminResponseMapper::toDTO)
+                    .orElse(null);
+
+            case "CLIENT" -> clientRepository.findByUserEmail(email)
+                    .map(clientResponseMapper::toDTO)
+                    .orElse(null);
+
+            case "PROVIDER" -> providerRepository.findByUserEmail(email)
+                    .map(providerResponseMapper::toDTO)
+                    .orElse(null);
+
             default -> null;
         };
     }
