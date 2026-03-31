@@ -73,19 +73,19 @@ public class ServiceProposalController {
 
             }
     )
-    @GetMapping("/public/service-proposal/{id}")
+    @GetMapping("/public/service-proposals/{id}")
     public ResponseEntity<EntityModel<ServiceProposalResponseDTO>> getServiceProposalById(@PathVariable int id)
     {
         return ResponseEntity.ok(assembler.toModel(service.getById(id)));
     }
 
 
-    @GetMapping("/public/service-proposal/{id}/provider")
+    @GetMapping("/public/service-proposals/{id}/provider")
     public ResponseEntity getProviderByProposalId(@PathVariable int id) {
         return ResponseEntity.ok(service.getProviderOfProposal(id));
     }
 
-    @GetMapping("/public/service-proposal/{id}/service")
+    @GetMapping("/public/service-proposals/{id}/service")
     public ResponseEntity getServiceByProposalId(@PathVariable int id) {
         return ResponseEntity.ok(service.getServiceOfProposal(id));
     }
@@ -99,7 +99,7 @@ public class ServiceProposalController {
             }
     )
     @PreAuthorize("hasAnyRole('PROVIDER', 'ADMIN')")
-    @DeleteMapping("/service-proposal/{id}")
+    @DeleteMapping("/service-proposals/{id}")
      public ResponseEntity deleteServiceProposal(@PathVariable int id){
         service.deleteById(id);
 

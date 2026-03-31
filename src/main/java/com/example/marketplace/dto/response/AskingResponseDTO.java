@@ -11,7 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class AskingServiceResponseDTO {
+public class AskingResponseDTO {
 
     private int id;
 

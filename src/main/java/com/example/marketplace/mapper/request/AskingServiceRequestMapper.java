@@ -1,8 +1,8 @@
 package com.example.marketplace.mapper.request;
 
 
-import com.example.marketplace.dto.request.AskingServiceRequestDTO;
-import com.example.marketplace.entity.AskingService;
+import com.example.marketplace.dto.request.AskingRequestDTO;
+import com.example.marketplace.entity.Asking;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -11,5 +11,5 @@ public interface AskingServiceRequestMapper {
 
     @Mapping(source = "idserviceproposal", target = "proposal.id")
     @Mapping(source = "idclient", target = "client.id")
-    AskingService toEntity(AskingServiceRequestDTO dto);
+    Asking toEntity(AskingRequestDTO dto);
 }

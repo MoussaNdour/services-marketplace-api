@@ -1,15 +1,18 @@
 package com.example.marketplace.controller;
 
-import com.example.marketplace.dto.request.AskingServiceRequestDTO;
-import com.example.marketplace.service.interfaces.ServiceAsking_ServiceInterface;
+import com.example.marketplace.assembler.AskingServiceAssembler;
+import com.example.marketplace.assembler.ServiceProposalAssembler;
+import com.example.marketplace.dto.request.AskingRequestDTO;
+import com.example.marketplace.entity.User;
+import com.example.marketplace.service.interfaces.AskingInterface;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -18,8 +21,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class AskingServiceController {
 
-    @Autowired
-    ServiceAsking_ServiceInterface service;
+    private final AskingInterface service;
+
+    private final AskingServiceAssembler assembler;
+
+    private final ServiceProposalAssembler proposalAssembler;
+
+    public AskingServiceController(AskingInterface service, AskingServiceAssembler assembler, ServiceProposalAssembler proposalAssembler)
+    {
+        this.service=service;
+        this.assembler = assembler;
+        this.proposalAssembler = proposalAssembler;
+    }
 
     @Operation(
             summary = "Getting all asking services",
@@ -33,7 +46,7 @@ public class AskingServiceController {
     )
     @GetMapping("/public/askingservices")
     public ResponseEntity getAllserviceAsking(){
-        return ResponseEntity.ok(service.getAll());
+        return ResponseEntity.ok(assembler.toCollectionModel(service.getAll()));
     }
 
 
@@ -53,19 +66,14 @@ public class AskingServiceController {
     )
     @GetMapping("/public/askingservices/{id}")
     public ResponseEntity getServiceAskingById(@PathVariable int id){
-        return ResponseEntity.ok(service.getById(id));
+        return ResponseEntity.ok(assembler.toModel(service.getById(id)));
     }
 
-    @PreAuthorize("hasRole('CLIENT')")
-    @Operation(
-            summary="allow clients to retrieve their services askings",
-            description="",
-            security = {@SecurityRequirement(name = "bearerAuth")}
-    )
+
     @GetMapping("/askingservices")
-    public ResponseEntity getMyAskings()
+    public ResponseEntity getMyAskings(@AuthenticationPrincipal User user)
     {
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(assembler.toCollectionModel(service.getClientAskings(user)));
     }
 
 
@@ -86,8 +94,26 @@ public class AskingServiceController {
     )
     @PreAuthorize("hasRole('CLIENT')")
     @PostMapping("/askingservices")
-    public ResponseEntity createServiceAsking(@RequestBody @Valid AskingServiceRequestDTO asking){
-        return ResponseEntity.status(201).body(service.save(asking));
+    public ResponseEntity createServiceAsking(@RequestBody @Valid AskingRequestDTO asking){
+        return ResponseEntity.status(201).body(assembler.toModel(service.save(asking)));
+    }
+
+    @Operation(
+            summary = ""
+    )
+    @GetMapping("public/askingservices/{id}/client")
+    public ResponseEntity getAskingClient(@PathVariable int id)
+    {
+        return ResponseEntity.ok(service.getClientByAskingId(id));
+    }
+
+    @Operation(
+            summary = ""
+    )
+    @GetMapping("public/askingservices/{id}/proposal")
+    public ResponseEntity getAskingPropoal(@PathVariable int id)
+    {
+        return ResponseEntity.ok(proposalAssembler.toModel(service.getProposalByAskingId(id)));
     }
 
     @Operation(
@@ -107,7 +133,6 @@ public class AskingServiceController {
     @PreAuthorize("hasRole('CLIENT')")
     @DeleteMapping("/public/askingservices/{id}")
     public ResponseEntity deleteServiceAsking(@PathVariable int id){
-
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

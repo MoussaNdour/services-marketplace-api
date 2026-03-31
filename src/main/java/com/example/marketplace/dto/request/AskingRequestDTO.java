@@ -6,7 +6,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class AskingServiceRequestDTO {
+public class AskingRequestDTO {
 
     private int idserviceproposal;
 
