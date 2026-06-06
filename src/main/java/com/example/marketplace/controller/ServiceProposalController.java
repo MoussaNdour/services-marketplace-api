@@ -1,6 +1,7 @@
 package com.example.marketplace.controller;
 
 
+import com.example.marketplace.assembler.ServiceAssembler;
 import com.example.marketplace.assembler.ServiceProposalAssembler;
 import com.example.marketplace.dto.request.ServiceProposalRequestDTO;
 import com.example.marketplace.dto.response.ServiceProposalResponseDTO;
@@ -25,12 +26,16 @@ import org.springframework.web.bind.annotation.*;
 public class ServiceProposalController {
 
     private final ServiceProposalServiceInterface service;
+
     private final ServiceProposalAssembler assembler;
 
+    private final ServiceAssembler serviceAssembler;
 
-    public ServiceProposalController(ServiceProposalServiceInterface service, ServiceProposalAssembler assembler) {
+
+    public ServiceProposalController(ServiceProposalServiceInterface service, ServiceProposalAssembler assembler, ServiceAssembler serviceAssembler) {
         this.service = service;
         this.assembler = assembler;
+        this.serviceAssembler = serviceAssembler;
     }
 
     @PreAuthorize("hasAnyRole('PROVIDER', 'ADMIN')")
@@ -87,7 +92,7 @@ public class ServiceProposalController {
 
     @GetMapping("/public/service-proposals/{id}/service")
     public ResponseEntity getServiceByProposalId(@PathVariable int id) {
-        return ResponseEntity.ok(service.getServiceOfProposal(id));
+        return ResponseEntity.ok(serviceAssembler.toModel(service.getServiceOfProposal(id)));
     }
     
     @Operation(

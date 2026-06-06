@@ -27,6 +27,7 @@ public class AskingServiceController {
 
     private final ServiceProposalAssembler proposalAssembler;
 
+
     public AskingServiceController(AskingInterface service, AskingServiceAssembler assembler, ServiceProposalAssembler proposalAssembler)
     {
         this.service=service;
