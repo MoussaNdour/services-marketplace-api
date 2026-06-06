@@ -9,6 +9,9 @@ import java.util.Optional;
 
 public interface CategoryRepository extends CrudRepository<Category,Integer> {
 
-
     Optional<Category> findByName(@Param("name") String name);
+
+
+    @Query(value = "SELECT c.* from category c join service s on c.id=s.category where s.id = :serviceId", nativeQuery = true)
+    Optional<Category> findByServiceId(@Param("serviceId") int serviceId);
 }

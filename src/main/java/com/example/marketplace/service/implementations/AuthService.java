@@ -175,6 +175,7 @@ public class AuthService implements AuthServiceInterface {
     public Object findProfileByRole(String email, String role) {
         return switch (role) {
             case "ADMIN" -> adminRepository.findByUserEmail(email)
+
                     .map(adminResponseMapper::toDTO)
                     .orElse(null);
 

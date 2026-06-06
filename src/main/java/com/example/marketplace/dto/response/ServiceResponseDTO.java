@@ -17,8 +17,6 @@ public class ServiceResponseDTO {
 
     private Date createdAt;
 
-    private String category;
-
     private String description;
 
     private double mark;

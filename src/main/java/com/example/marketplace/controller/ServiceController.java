@@ -1,8 +1,8 @@
 package com.example.marketplace.controller;
 
 
+import com.example.marketplace.assembler.ServiceAssembler;
 import com.example.marketplace.dto.request.ServiceRequestDTO;
-import com.example.marketplace.dto.response.ServiceResponseDTO;
 import com.example.marketplace.service.interfaces.ServiceForServiceInterface;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,22 +10,25 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
 
 
 @RestController
 @RequestMapping("/api")
 public class ServiceController {
 
-    @Autowired
-    ServiceForServiceInterface service;
 
+    private final ServiceForServiceInterface service;
+
+    private final ServiceAssembler assembler;
+
+    public ServiceController(ServiceForServiceInterface service, ServiceAssembler assembler) {
+        this.service = service;
+        this.assembler = assembler;
+    }
 
     @Operation(
             summary = "Return all services",
@@ -41,9 +44,9 @@ public class ServiceController {
     @GetMapping("/public/services")
     public ResponseEntity getAllServices(@RequestParam(required = false) String name){
         if (name != null && !name.isEmpty()){
-            return ResponseEntity.ok(service.searchService(name));
+            return ResponseEntity.ok(assembler.toCollectionModel(service.searchService(name)));
         }
-        return ResponseEntity.ok(service.getAll());
+        return ResponseEntity.ok(assembler.toCollectionModel(service.getAll()));
     }
 
 
@@ -97,4 +100,12 @@ public class ServiceController {
     public ResponseEntity getProposalsByServiceId(@PathVariable int id){
         return ResponseEntity.ok(service.getProposalsByServiceId(id));
     }
+
+
+    @GetMapping("/public/service/{id}/category")
+    public ResponseEntity getServiceCategory(@PathVariable int id)
+    {
+        return ResponseEntity.ok(service.getServiceCategory(id));
+    }
+    
 }

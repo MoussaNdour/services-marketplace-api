@@ -1,18 +1,23 @@
 package com.example.marketplace.service.implementations;
 
 import com.example.marketplace.dto.request.ServiceRequestDTO;
+import com.example.marketplace.dto.response.CategoryResponseDTO;
 import com.example.marketplace.dto.response.ProviderResponseDTO;
 import com.example.marketplace.dto.response.ServiceProposalResponseDTO;
 import com.example.marketplace.dto.response.ServiceResponseDTO;
+import com.example.marketplace.entity.Category;
 import com.example.marketplace.entity.Provider;
 import com.example.marketplace.entity.ServiceProposal;
+import com.example.marketplace.exception.CategoryNotFoundException;
 import com.example.marketplace.exception.NonexistingImageException;
 import com.example.marketplace.exception.ServiceAlreadyExistingException;
 import com.example.marketplace.exception.ServiceNotFoundException;
 import com.example.marketplace.mapper.request.ServiceRequestMapper;
+import com.example.marketplace.mapper.response.CategoryResponseMapper;
 import com.example.marketplace.mapper.response.ProviderResponseMapper;
 import com.example.marketplace.mapper.response.ServiceProposalResponseMapper;
 import com.example.marketplace.mapper.response.ServiceResponseMapper;
+import com.example.marketplace.repository.CategoryRepository;
 import com.example.marketplace.repository.ImageRepository;
 import com.example.marketplace.repository.ServiceProposalRepository;
 import com.example.marketplace.repository.ServiceRepository;
@@ -25,6 +30,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ServiceForService implements ServiceForServiceInterface {
@@ -41,16 +47,20 @@ public class ServiceForService implements ServiceForServiceInterface {
 
     private final ServiceProposalResponseMapper proposalResponseMapper;
 
-    public ServiceForService(ServiceRepository repos, ServiceRequestMapper requestMapper, ServiceResponseMapper responseMapper, ImageRepository imageRepos, ServiceProposalRepository proposalRepos,ServiceProposalResponseMapper proposalResponseMapper)
-    {
-        this.repos=repos;
-        this.requestMapper=requestMapper;
-        this.responseMapper=responseMapper;
-        this.imageRepository=imageRepos;
-        this.proposalRepos=proposalRepos;
-        this.proposalResponseMapper=proposalResponseMapper;
-    }
+    private final CategoryRepository categoryRepos;
 
+    private final CategoryResponseMapper categeoryResponseMapper;
+
+    public ServiceForService(ServiceRepository repos, ServiceRequestMapper requestMapper, ServiceResponseMapper responseMapper, ImageRepository imageRepository, ServiceProposalRepository proposalRepos, ServiceProposalResponseMapper proposalResponseMapper, CategoryRepository categoryRepos, CategoryResponseMapper categeoryResponseMapper) {
+        this.repos = repos;
+        this.requestMapper = requestMapper;
+        this.responseMapper = responseMapper;
+        this.imageRepository = imageRepository;
+        this.proposalRepos = proposalRepos;
+        this.proposalResponseMapper = proposalResponseMapper;
+        this.categoryRepos = categoryRepos;
+        this.categeoryResponseMapper = categeoryResponseMapper;
+    }
 
     @Override
     public ServiceResponseDTO save(ServiceRequestDTO dto) {
@@ -128,6 +138,19 @@ public class ServiceForService implements ServiceForServiceInterface {
     @Override
     public boolean findServiceByName(String name) {
         return repos.findByName(name).isPresent();
+    }
+
+    @Override
+    public CategoryResponseDTO getServiceCategory(int id) {
+        getById(id);
+
+        Optional<Category> category = categoryRepos.findByServiceId(id);
+
+
+        if(category.isPresent())
+            return categeoryResponseMapper.toDTO(category.get());
+        else
+            throw new CategoryNotFoundException("Categoryt not found for this service");
     }
 
 
