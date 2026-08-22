@@ -69,7 +69,7 @@ public class ServiceController {
     )
     @GetMapping("/public/services/{id}")
     public ResponseEntity getServiceById(@PathVariable int id){
-        return ResponseEntity.ok(service.getById(id));
+        return ResponseEntity.ok(assembler.toModel(service.getById(id)));
     }
 
     @Operation(

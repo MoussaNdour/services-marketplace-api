@@ -105,4 +105,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleServiceAlreadyExistException(ServiceAlreadyExistingException e){
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
+
+    @ExceptionHandler(UnauthorazedConnection.class)
+    public ResponseEntity<String> handleUnauthorizedConnection(UnauthorizedUserRoleException e)
+    {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
 }

@@ -3,7 +3,7 @@ package com.example.marketplace.type;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum Role {
-    ADMIN, CLIENT, PROVIDER;
+    CLIENT, PROVIDER;
 
     @JsonCreator
     public static Role fromString(String key) {

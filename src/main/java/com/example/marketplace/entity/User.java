@@ -42,10 +42,17 @@ public class User implements UserDetails {
     @Column(name = "updatedAt", columnDefinition = "TIME")
     private Date updatedAt;
 
+    @Column(name = "active")
+    private boolean active=true;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+this.role));
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.active;
     }
 
     @Override
