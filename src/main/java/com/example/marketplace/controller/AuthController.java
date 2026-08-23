@@ -65,7 +65,7 @@ public class AuthController {
     }
 
 
-    @GetMapping("/refresh")
+    @PostMapping("/refresh")
     public ResponseEntity<String> refreshToken(@RequestBody @Valid Payload payload){
         return ResponseEntity.ok(service.refreshToken(payload));
     }
