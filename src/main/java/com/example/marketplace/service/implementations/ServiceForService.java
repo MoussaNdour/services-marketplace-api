@@ -65,18 +65,14 @@ public class ServiceForService implements ServiceForServiceInterface {
     @Override
     public ServiceResponseDTO save(ServiceRequestDTO dto) {
 
-        imageRepository.findById(dto.getIdImage()).orElseThrow(()->new NonexistingImageException("Image not existing for the id " + dto.getIdImage()));
-
         if(findServiceByName(dto.getName()))
             throw new ServiceAlreadyExistingException("This service already exist and cannot be created again");
 
         com.example.marketplace.entity.Service service=requestMapper.toEntity(dto);
         service.setCreatedAt(new Date());
         service=repos.save(service);
-
-
+        
         return responseMapper.toDTO(service);
-
     }
 
     @Override

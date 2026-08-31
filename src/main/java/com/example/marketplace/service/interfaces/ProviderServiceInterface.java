@@ -12,6 +12,6 @@ public interface ProviderServiceInterface extends GeneralInterface<ProviderReque
 
     void disableAccount(String email);
     ProviderResponseDTO getByEmail(String email);
-    List<ServiceResponseDTO> getAllServicesByProvider(User user,String email);
+    List<ServiceResponseDTO> getAllServicesByProvider(String email);
 
 }

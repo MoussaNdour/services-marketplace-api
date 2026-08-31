@@ -90,9 +90,7 @@ public class ProviderService implements ProviderServiceInterface {
 
 
     @Override
-    public List<ServiceResponseDTO> getAllServicesByProvider(User user,String email) {
-        if(!email.equals(user.getEmail()))
-            throw new ForbiddenOperationException("This user is not authorized to access to others users' datas");
+    public List<ServiceResponseDTO> getAllServicesByProvider(String email) {
 
         List<ServiceResponseDTO> services = new ArrayList<>();
 

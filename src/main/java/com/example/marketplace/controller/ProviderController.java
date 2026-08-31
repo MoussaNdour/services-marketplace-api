@@ -18,8 +18,12 @@ import java.util.List;
 @RequestMapping("/api")
 public class ProviderController {
 
-    @Autowired
+
     ProviderServiceInterface service;
+
+    public ProviderController(ProviderServiceInterface service) {
+        this.service = service;
+    }
 
     @Operation(
             summary = "",
@@ -68,13 +72,13 @@ public class ProviderController {
     }
 
     @Operation(
-            summary = "alllow users to see all services provided by a client",
+            summary = "Allow clients to see all services provided by provider",
             security = { @SecurityRequirement(name = "bearerAuth") },
             description = ""
     )
     @GetMapping("/public/providers/{email}/services")
     public ResponseEntity getAllservicesprovided(@PathVariable String email){
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(service.getAllServicesByProvider(email));
     }
 
     @Operation(
@@ -83,9 +87,9 @@ public class ProviderController {
             description = "getting all services proposed by a provider"
     )
     @PreAuthorize("hasRole('PROVIDER')")
-    @GetMapping("/providers/{email}/services")
-    public ResponseEntity<List<ServiceResponseDTO>> getServicesByProvider(@PathVariable String email,@AuthenticationPrincipal User user){
-        return ResponseEntity.ok(service.getAllServicesByProvider(user,email));
+    @GetMapping("/providers/services")
+    public ResponseEntity<List<ServiceResponseDTO>> getServicesByProvider(@AuthenticationPrincipal User user){
+        return ResponseEntity.ok(service.getAllServicesByProvider(user.getEmail()));
     }
 
 }

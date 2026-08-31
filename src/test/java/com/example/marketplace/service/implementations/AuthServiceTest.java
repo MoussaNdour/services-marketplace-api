@@ -357,8 +357,8 @@ class AuthServiceTest {
 
 
         assertNotNull(response);
-        assertEquals("access-token", response.getToken());
-        assertEquals(adminResponseMapper.toDTO(mockProfile), response.getProfile());
+        assertEquals("access-token", response.getJwt());
+        assertEquals(adminResponseMapper.toDTO(mockProfile), response.getUser());
 
         verify(authenticationManager).authenticate(any());
         verify(jwtService).generateToken(anyString(), anyString());

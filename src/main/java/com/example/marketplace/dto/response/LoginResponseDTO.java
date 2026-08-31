@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class LoginResponseDTO {
-    private String token;
+    private String jwt;
     private String refreshToken;
-    private Object profile;
+    private Object user;
 }

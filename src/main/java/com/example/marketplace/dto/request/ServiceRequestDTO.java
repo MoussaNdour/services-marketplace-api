@@ -28,6 +28,5 @@ public class ServiceRequestDTO {
 
     private String description;
 
-    @Min(value = 1)
-    private int idImage;
+    private Integer idImage;
 }

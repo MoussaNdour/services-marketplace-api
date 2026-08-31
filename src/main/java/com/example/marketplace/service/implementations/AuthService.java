@@ -154,9 +154,9 @@ public class AuthService implements AuthServiceInterface {
         }
 
         return LoginResponseDTO.builder()
-                .token(jwtService.generateToken(user.getUsername(), role))
+                .jwt(jwtService.generateToken(user.getUsername(), role))
                 .refreshToken(jwtService.generateRefreshToken(user.getUsername(), role))
-                .profile(profile)
+                .user(profile)
                 .build();
     }
 
