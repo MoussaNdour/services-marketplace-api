@@ -8,6 +8,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ClientResponseMapper {
 
+    @Mapping(source = "user.role", target = "role")
     @Mapping(source = "user.email", target = "email")
     ClientResponseDTO toDTO(Client client);
 }

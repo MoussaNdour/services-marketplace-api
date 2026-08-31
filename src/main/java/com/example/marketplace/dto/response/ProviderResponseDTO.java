@@ -29,4 +29,5 @@ public class ProviderResponseDTO {
 
     private int yearsOfExperience;
 
+    private String role;
 }

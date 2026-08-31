@@ -10,5 +10,6 @@ import org.mapstruct.Mapping;
 public interface ProviderResponseMapper {
 
     @Mapping(source = "user.email", target = "email")
+    @Mapping(source = "user.role", target = "role")
     ProviderResponseDTO toDTO(Provider provider);
 }

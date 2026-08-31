@@ -9,5 +9,6 @@ import org.mapstruct.Mapping;
 public interface AdminResponseMapper {
 
     @Mapping(source = "user.email", target = "email")
+    @Mapping(source = "user.role", target = "role")
     AdminResponseDTO toDTO(Admin admin);
 }
