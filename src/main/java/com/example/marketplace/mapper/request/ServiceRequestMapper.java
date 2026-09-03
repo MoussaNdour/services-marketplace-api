@@ -10,6 +10,6 @@ import org.mapstruct.Mapping;
 public interface ServiceRequestMapper {
 
     @Mapping(source = "idcategory", target = "category.id")
-    @Mapping(source = "idImage", target = "image.id")
+    @Mapping(target = "image", ignore = true)
     Service toEntity(ServiceRequestDTO dto);
 }

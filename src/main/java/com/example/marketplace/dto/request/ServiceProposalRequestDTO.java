@@ -10,7 +10,10 @@ import lombok.NoArgsConstructor;
 @Data
 public class ServiceProposalRequestDTO {
 
-    @Min(value = 1, message = "This key is invalide")
+    @Min(value = 1, message = "This key is not valid as id")
     private int idservice;
+
+    @Min(value = 100)
+    private double price;
 
 }

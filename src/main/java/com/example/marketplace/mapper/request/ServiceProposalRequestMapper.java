@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ServiceProposalRequestMapper {
 
-    @Mapping(source = "idservice", target = "service.id")
+    @Mapping(target = "service",ignore = true)
+    @Mapping(target = "provider", ignore = true)
     ServiceProposal toEntity(ServiceProposalRequestDTO dto);
 }

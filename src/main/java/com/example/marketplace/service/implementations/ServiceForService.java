@@ -2,29 +2,24 @@ package com.example.marketplace.service.implementations;
 
 import com.example.marketplace.dto.request.ServiceRequestDTO;
 import com.example.marketplace.dto.response.CategoryResponseDTO;
-import com.example.marketplace.dto.response.ProviderResponseDTO;
 import com.example.marketplace.dto.response.ServiceProposalResponseDTO;
 import com.example.marketplace.dto.response.ServiceResponseDTO;
 import com.example.marketplace.entity.Category;
-import com.example.marketplace.entity.Provider;
+import com.example.marketplace.entity.Image;
 import com.example.marketplace.entity.ServiceProposal;
 import com.example.marketplace.exception.CategoryNotFoundException;
-import com.example.marketplace.exception.NonexistingImageException;
 import com.example.marketplace.exception.ServiceAlreadyExistingException;
 import com.example.marketplace.exception.ServiceNotFoundException;
 import com.example.marketplace.mapper.request.ServiceRequestMapper;
 import com.example.marketplace.mapper.response.CategoryResponseMapper;
-import com.example.marketplace.mapper.response.ProviderResponseMapper;
 import com.example.marketplace.mapper.response.ServiceProposalResponseMapper;
 import com.example.marketplace.mapper.response.ServiceResponseMapper;
 import com.example.marketplace.repository.CategoryRepository;
 import com.example.marketplace.repository.ImageRepository;
 import com.example.marketplace.repository.ServiceProposalRepository;
 import com.example.marketplace.repository.ServiceRepository;
-import com.example.marketplace.service.interfaces.ProviderServiceInterface;
 import com.example.marketplace.service.interfaces.ServiceForServiceInterface;
-import com.example.marketplace.service.interfaces.ServiceProposalServiceInterface;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -70,8 +65,14 @@ public class ServiceForService implements ServiceForServiceInterface {
 
         com.example.marketplace.entity.Service service=requestMapper.toEntity(dto);
         service.setCreatedAt(new Date());
+
+        if (dto.getIdImage() != null) {
+            Image image = imageRepository.findById(dto.getIdImage())
+                    .orElseThrow(() -> new EntityNotFoundException("Image not found"));
+            service.setImage(image);
+        }
         service=repos.save(service);
-        
+
         return responseMapper.toDTO(service);
     }
 

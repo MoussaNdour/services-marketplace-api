@@ -67,12 +67,15 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
 
         User user = (User)authentication.getPrincipal();
 
-        if(user.getRole()!="PROVIDER")
-            throw new UnauthorizedUserRoleException("User unauthorized to provide service");
+        Service service = serviceRepos.getByProposalId(dto.getIdservice()).orElseThrow(()->
+            new ServiceNotFoundException("Service not found for this id")
+        );
+
 
         ServiceProposal proposal = requestMapper.toEntity(dto);
 
         proposal.setProvider(providerRepository.findByUserEmail(user.getEmail()).orElse(null));
+        proposal.setService(service);
 
         return responseMapper.toDTO(repos.save(proposal));
     }

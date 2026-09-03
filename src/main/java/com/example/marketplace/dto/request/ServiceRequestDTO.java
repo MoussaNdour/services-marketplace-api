@@ -23,7 +23,7 @@ public class ServiceRequestDTO {
     @NotNull
     private Integer idcategory;
 
-    @Min(value = 10)
+    @Min(value = 30)
     private double price;
 
     private String description;
