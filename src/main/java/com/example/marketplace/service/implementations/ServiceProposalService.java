@@ -16,6 +16,7 @@ import com.example.marketplace.mapper.response.ServiceResponseMapper;
 import com.example.marketplace.repository.ProviderRepository;
 import com.example.marketplace.repository.ServiceProposalRepository;
 import com.example.marketplace.service.interfaces.ServiceProposalServiceInterface;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.example.marketplace.repository.ServiceRepository;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @org.springframework.stereotype.Service
 public class ServiceProposalService implements ServiceProposalServiceInterface {
 
@@ -67,15 +69,20 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
 
         User user = (User)authentication.getPrincipal();
 
-        Service service = serviceRepos.getByProposalId(dto.getIdservice()).orElseThrow(()->
+
+        Service service = serviceRepos.findById(dto.getIdservice()).orElseThrow(()->
             new ServiceNotFoundException("Service not found for this id")
         );
 
 
         ServiceProposal proposal = requestMapper.toEntity(dto);
+        Provider provider = providerRepository.findByUserEmail(user.getEmail())
+                .orElseThrow(() -> new ProviderNotFoundException("Aucun profil prestataire pour cet utilisateur"));
+        proposal.setProvider(provider);
 
-        proposal.setProvider(providerRepository.findByUserEmail(user.getEmail()).orElse(null));
+        proposal.setProvider(provider);
         proposal.setService(service);
+
 
         return responseMapper.toDTO(repos.save(proposal));
     }
