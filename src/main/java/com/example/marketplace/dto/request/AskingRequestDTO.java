@@ -10,5 +10,4 @@ public class AskingRequestDTO {
 
     private int idserviceproposal;
 
-    private int idclient;
 }

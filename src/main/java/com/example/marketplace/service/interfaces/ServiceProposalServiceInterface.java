@@ -1,6 +1,7 @@
 package com.example.marketplace.service.interfaces;
 
 import com.example.marketplace.dto.request.ServiceProposalRequestDTO;
+import com.example.marketplace.dto.request.ServiceProposalUpdateDTO;
 import com.example.marketplace.dto.response.ProviderResponseDTO;
 import com.example.marketplace.dto.response.ServiceProposalResponseDTO;
 import com.example.marketplace.dto.response.ServiceResponseDTO;
@@ -11,4 +12,5 @@ public interface ServiceProposalServiceInterface extends GeneralInterface<Servic
     List<ServiceProposalResponseDTO> getServicesProposalByIdProvider(int idprovider);
     ProviderResponseDTO getProviderOfProposal(int id);
     ServiceResponseDTO getServiceOfProposal(int id);
+    ServiceProposalResponseDTO updateService(int id, ServiceProposalUpdateDTO update);
 }

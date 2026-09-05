@@ -1,6 +1,7 @@
 package com.example.marketplace.service.implementations;
 
 import com.example.marketplace.dto.request.ServiceProposalRequestDTO;
+import com.example.marketplace.dto.request.ServiceProposalUpdateDTO;
 import com.example.marketplace.dto.response.ProviderResponseDTO;
 import com.example.marketplace.dto.response.ServiceProposalResponseDTO;
 import com.example.marketplace.dto.response.ServiceResponseDTO;
@@ -17,9 +18,11 @@ import com.example.marketplace.repository.ProviderRepository;
 import com.example.marketplace.repository.ServiceProposalRepository;
 import com.example.marketplace.service.interfaces.ServiceProposalServiceInterface;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.example.marketplace.repository.ServiceRepository;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,8 +80,7 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
 
         ServiceProposal proposal = requestMapper.toEntity(dto);
         Provider provider = providerRepository.findByUserEmail(user.getEmail())
-                .orElseThrow(() -> new ProviderNotFoundException("Aucun profil prestataire pour cet utilisateur"));
-        proposal.setProvider(provider);
+                .orElseThrow(() -> new ProviderNotFoundException("No provider profile found for this provider"));
 
         proposal.setProvider(provider);
         proposal.setService(service);
@@ -111,6 +113,17 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
 
     @Override
     public void deleteById(int id) {
+        ServiceProposal proposal = repos.findById(id).orElseThrow(
+                ()->new ServiceProposalNotFoundException("Proposal not found for this id")
+        );
+
+        User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Provider provider = proposal.getProvider();
+
+        if(!provider.getUser().getEmail().equals(user.getEmail()))
+            throw new AccessDeniedException("This provider is not allow to edit this proposal");
+
         repos.deleteById(id);
     }
 
@@ -151,6 +164,25 @@ public class ServiceProposalService implements ServiceProposalServiceInterface {
         else
             throw new ServiceNotFoundException("Service not found for this proposal");
 
+    }
+
+    @Override
+    public ServiceProposalResponseDTO updateService(int id, ServiceProposalUpdateDTO update) {
+        ServiceProposal proposal = repos.findById(id).orElseThrow(
+                ()->new ServiceProposalNotFoundException("Proposal not found for this id")
+        );
+
+        User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Provider provider = proposal.getProvider();
+
+        if(!provider.getUser().getEmail().equals(user.getEmail()))
+            throw new AccessDeniedException("This provider is not allow to edit this proposal");
+
+        requestMapper.updateEntityFromDto(update,proposal);
+
+
+        return responseMapper.toDTO(repos.save(proposal));
     }
 
 }

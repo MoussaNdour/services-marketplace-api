@@ -3,6 +3,7 @@ package com.example.marketplace.controller;
 import com.example.marketplace.assembler.AskingServiceAssembler;
 import com.example.marketplace.assembler.ServiceProposalAssembler;
 import com.example.marketplace.dto.request.AskingRequestDTO;
+import com.example.marketplace.dto.request.AskingUpdateDTO;
 import com.example.marketplace.entity.User;
 import com.example.marketplace.service.interfaces.AskingInterface;
 import io.swagger.v3.oas.annotations.Operation;
@@ -120,6 +121,7 @@ public class AskingServiceController {
     @Operation(
             summary = "Delete an service asking",
             description = "Delete an service asking by using his id",
+            security = @SecurityRequirement(name = "bearerAuth"),
             responses = {
                     @ApiResponse(
                             responseCode = "404",
@@ -131,10 +133,26 @@ public class AskingServiceController {
                     )
             }
     )
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('CLIENT','ADMIN')")
     @DeleteMapping("/askingservices/{id}")
     public ResponseEntity deleteServiceAsking(@PathVariable int id){
+        service.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Operation(
+            summary = "",
+            description = "",
+            security = @SecurityRequirement(name = "bearerAuth"),
+            responses = {
+
+            }
+    )
+    @PreAuthorize("hasAnyRole('PROVIDER','CLIENT')")
+    @PutMapping("/askingservices/{id}")
+    public ResponseEntity updateAskingStatus(@PathVariable int id, @Valid @RequestBody AskingUpdateDTO dto)
+    {
+        return ResponseEntity.ok(service.updateStatus(id,dto));
     }
 
 }

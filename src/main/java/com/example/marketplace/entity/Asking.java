@@ -26,7 +26,7 @@ public class Asking {
     private ServiceProposal proposal;
 
     @Column(name = "status")
-    private String status;
+    private String status="PENDING";
 
     @Column(name = "createdAt", columnDefinition = "TIME")
     private Date createdAt;

@@ -1,6 +1,7 @@
 package com.example.marketplace.service.implementations;
 
 import com.example.marketplace.dto.request.AskingRequestDTO;
+import com.example.marketplace.dto.request.AskingUpdateDTO;
 import com.example.marketplace.dto.response.AskingResponseDTO;
 import com.example.marketplace.dto.response.ClientResponseDTO;
 import com.example.marketplace.dto.response.ServiceProposalResponseDTO;
@@ -9,6 +10,9 @@ import com.example.marketplace.entity.Client;
 import com.example.marketplace.entity.ServiceProposal;
 import com.example.marketplace.entity.User;
 import com.example.marketplace.exception.AskingServiceNotFoundException;
+import com.example.marketplace.exception.ClientNotFoundException;
+import com.example.marketplace.exception.DuplicateAskingException;
+import com.example.marketplace.exception.ServiceProposalNotFoundException;
 import com.example.marketplace.mapper.request.AskingServiceRequestMapper;
 import com.example.marketplace.mapper.response.AskingServiceResponseMapper;
 import com.example.marketplace.mapper.response.ClientResponseMapper;
@@ -19,10 +23,15 @@ import com.example.marketplace.repository.ServiceProposalRepository;
 import com.example.marketplace.service.interfaces.ClientServiceInterface;
 import com.example.marketplace.service.interfaces.AskingInterface;
 import com.example.marketplace.service.interfaces.ServiceProposalServiceInterface;
+import com.example.marketplace.type.AskingStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import org.springframework.security.access.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -64,11 +73,29 @@ public class AskingService implements AskingInterface {
 
     @Override
     public AskingResponseDTO save(AskingRequestDTO dto) {
-        clientservice.getById(dto.getIdclient());
+        User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        serviceproposalservice.getById(dto.getIdserviceproposal());
+        List<Asking> askings = repository.findByClientUserEmail(user.getEmail());
 
-        AskingResponseDTO response=responseMapper.toDTO(repository.save(requestMapper.toEntity(dto)));
+        for(Asking asking:askings){
+            if(asking.getProposal().getId()==dto.getIdserviceproposal())
+                throw new DuplicateAskingException("The client is already asking for this service");
+        }
+
+
+        Client client = clientRepos.findByUserEmail(user.getEmail()).orElseThrow(
+                ()->new ClientNotFoundException("No profile found for this client")
+        );
+
+        ServiceProposal proposal = proposalRepos.findById(dto.getIdserviceproposal()).orElseThrow(
+                ()-> new ServiceProposalNotFoundException("Offre introuvable pour cet id")
+        );
+
+        Asking asking = requestMapper.toEntity(dto);
+        asking.setClient(client);
+        asking.setProposal(proposal);
+
+        AskingResponseDTO response=responseMapper.toDTO(repository.save(asking));
 
         return response;
     }
@@ -95,9 +122,19 @@ public class AskingService implements AskingInterface {
 
     @Override
     public void deleteById(int id) {
-        repository.findById(id).orElseThrow(
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        User user = (User)authentication.getPrincipal();
+
+        Asking asking = repository.findById(id).orElseThrow(
                 ()->new AskingServiceNotFoundException("Not service Asking found for this id")
         );
+
+        if(user.getRole().equals("CLIENT"))
+        {
+            if(!asking.getClient().getUser().getEmail().equals(user.getEmail()))
+                throw new AccessDeniedException("This client is no allowed to deleted this service asking");
+        }
 
         repository.deleteById(id);
     }
@@ -137,5 +174,40 @@ public class AskingService implements AskingInterface {
             return proposalResponseMapper.toDTO(proposal.get());
         else
             throw new IllegalStateException("Asking found but no proposal was found");
+    }
+
+    public AskingResponseDTO updateStatus(int id, AskingUpdateDTO dto) {
+        Asking asking = repository.findById(id)
+                .orElseThrow(() -> new AskingServiceNotFoundException("Demande introuvable"));
+
+        User currentUser = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String clientEmail = asking.getClient().getUser().getEmail();
+        String providerEmail = asking.getProposal().getProvider().getUser().getEmail();
+        AskingStatus newStatus = AskingStatus.valueOf(dto.getStatus());
+
+        boolean isClient = clientEmail.equals(currentUser.getEmail());
+        boolean isProvider = providerEmail.equals(currentUser.getEmail());
+
+        if (isClient && newStatus == AskingStatus.CANCELLED
+                && Objects.equals(asking.getStatus(), AskingStatus.PENDING.toString())) {
+            requestMapper.updateEntityFromDto(dto,asking);
+
+            repository.save(asking);
+        } else if (isProvider && isValidProviderTransition(asking.getStatus(), newStatus)) {
+            requestMapper.updateEntityFromDto(dto,asking);
+
+            repository.save(asking);
+        } else {
+            throw new AccessDeniedException("Transition de statut non autorisée");
+        }
+
+        asking.setStatus(newStatus.name());
+        return responseMapper.toDTO(repository.save(asking));
+    }
+
+    private boolean isValidProviderTransition(String status, AskingStatus newStatus) {
+        return (status.equals("PENDING") && newStatus == AskingStatus.ACCEPTED)
+                || (status.equals("PENDING") && newStatus == AskingStatus.REJECTED)
+                || (status.equals("ACCEPTED") && newStatus == AskingStatus.COMPLETED);
     }
 }

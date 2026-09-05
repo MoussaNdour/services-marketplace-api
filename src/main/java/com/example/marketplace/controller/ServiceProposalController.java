@@ -4,6 +4,7 @@ package com.example.marketplace.controller;
 import com.example.marketplace.assembler.ServiceAssembler;
 import com.example.marketplace.assembler.ServiceProposalAssembler;
 import com.example.marketplace.dto.request.ServiceProposalRequestDTO;
+import com.example.marketplace.dto.request.ServiceProposalUpdateDTO;
 import com.example.marketplace.dto.response.ServiceProposalResponseDTO;
 
 import com.example.marketplace.service.interfaces.ServiceProposalServiceInterface;
@@ -107,6 +108,13 @@ public class ServiceProposalController {
         service.deleteById(id);
 
         return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasRole('PROVIDER')")
+    @PutMapping("/service-proposals/{id}")
+    public ResponseEntity updateProposal(@PathVariable int id, @RequestBody @Valid ServiceProposalUpdateDTO update)
+    {
+        return ResponseEntity.ok(service.updateService(id,update));
     }
 
 }

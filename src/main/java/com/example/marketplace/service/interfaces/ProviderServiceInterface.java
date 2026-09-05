@@ -4,7 +4,6 @@ import com.example.marketplace.dto.request.ProviderRequestDTO;
 import com.example.marketplace.dto.response.AskingResponseDTO;
 import com.example.marketplace.dto.response.ProviderResponseDTO;
 import com.example.marketplace.dto.response.ServiceResponseDTO;
-import com.example.marketplace.entity.Service;
 import com.example.marketplace.entity.User;
 
 import java.util.List;

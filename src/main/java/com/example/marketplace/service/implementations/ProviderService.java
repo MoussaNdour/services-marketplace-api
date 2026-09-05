@@ -7,9 +7,7 @@ import com.example.marketplace.dto.response.ServiceResponseDTO;
 import com.example.marketplace.entity.Asking;
 import com.example.marketplace.entity.Provider;
 import com.example.marketplace.entity.User;
-import com.example.marketplace.exception.ForbiddenOperationException;
 import com.example.marketplace.exception.ProviderNotFoundException;
-import com.example.marketplace.mapper.request.ProviderRequestMapper;
 import com.example.marketplace.mapper.response.AskingServiceResponseMapper;
 import com.example.marketplace.mapper.response.ProviderResponseMapper;
 import com.example.marketplace.mapper.response.ServiceResponseMapper;
@@ -17,8 +15,6 @@ import com.example.marketplace.repository.AskingRepository;
 import com.example.marketplace.repository.ProviderRepository;
 import com.example.marketplace.repository.ServiceRepository;
 import com.example.marketplace.service.interfaces.ProviderServiceInterface;
-import com.example.marketplace.service.interfaces.ServiceForServiceInterface;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

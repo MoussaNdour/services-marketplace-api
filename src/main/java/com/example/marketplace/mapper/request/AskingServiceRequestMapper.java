@@ -2,14 +2,22 @@ package com.example.marketplace.mapper.request;
 
 
 import com.example.marketplace.dto.request.AskingRequestDTO;
+import com.example.marketplace.dto.request.AskingUpdateDTO;
 import com.example.marketplace.entity.Asking;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface AskingServiceRequestMapper {
 
-    @Mapping(source = "idserviceproposal", target = "proposal.id")
-    @Mapping(source = "idclient", target = "client.id")
+    @Mapping(target = "proposal", ignore = true)
+    @Mapping(target = "client", ignore = true)
     Asking toEntity(AskingRequestDTO dto);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "client", ignore = true)
+    @Mapping(target = "proposal", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    void updateEntityFromDto(AskingUpdateDTO dto, @MappingTarget Asking asking);
 }
