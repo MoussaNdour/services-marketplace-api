@@ -1,15 +1,19 @@
 package com.example.marketplace.service.implementations;
 
 import com.example.marketplace.dto.request.ProviderRequestDTO;
+import com.example.marketplace.dto.response.AskingResponseDTO;
 import com.example.marketplace.dto.response.ProviderResponseDTO;
 import com.example.marketplace.dto.response.ServiceResponseDTO;
+import com.example.marketplace.entity.Asking;
 import com.example.marketplace.entity.Provider;
 import com.example.marketplace.entity.User;
 import com.example.marketplace.exception.ForbiddenOperationException;
 import com.example.marketplace.exception.ProviderNotFoundException;
 import com.example.marketplace.mapper.request.ProviderRequestMapper;
+import com.example.marketplace.mapper.response.AskingServiceResponseMapper;
 import com.example.marketplace.mapper.response.ProviderResponseMapper;
 import com.example.marketplace.mapper.response.ServiceResponseMapper;
+import com.example.marketplace.repository.AskingRepository;
 import com.example.marketplace.repository.ProviderRepository;
 import com.example.marketplace.repository.ServiceRepository;
 import com.example.marketplace.service.interfaces.ProviderServiceInterface;
@@ -31,12 +35,16 @@ public class ProviderService implements ProviderServiceInterface {
     private final ServiceRepository serviceRepos;
 
     private final ServiceResponseMapper serviceResponseMapper;
+    private final AskingRepository askingRepository;
+    private final AskingServiceResponseMapper askingServiceResponseMapper;
 
-    public ProviderService(ProviderRepository repos,ProviderResponseMapper responseMapper,ServiceRepository serviceRepos,ServiceResponseMapper serviceResponseMapper){
+    public ProviderService(ProviderRepository repos, ProviderResponseMapper responseMapper, ServiceRepository serviceRepos, ServiceResponseMapper serviceResponseMapper, AskingRepository askingRepository, AskingServiceResponseMapper askingServiceResponseMapper){
         this.repos=repos;
         this.responseMapper=responseMapper;
         this.serviceRepos=serviceRepos;
         this.serviceResponseMapper=serviceResponseMapper;
+        this.askingRepository = askingRepository;
+        this.askingServiceResponseMapper = askingServiceResponseMapper;
     }
 
 
@@ -100,6 +108,18 @@ public class ProviderService implements ProviderServiceInterface {
         }
 
         return services;
+    }
+
+    @Override
+    public List<AskingResponseDTO> getProviderAskings(User provider) {
+        List<AskingResponseDTO> askings = new ArrayList<>();
+
+        for(Asking asking:askingRepository.getAllByProviderEmail(provider.getEmail()))
+        {
+            askings.add(askingServiceResponseMapper.toDTO(asking));
+        }
+
+        return askings;
     }
 
 }

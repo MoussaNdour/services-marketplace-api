@@ -70,7 +70,7 @@ public class AskingServiceController {
         return ResponseEntity.ok(assembler.toModel(service.getById(id)));
     }
 
-
+    @PreAuthorize("hasRole('CLIENT')")
     @GetMapping("/askingservices")
     public ResponseEntity getMyAskings(@AuthenticationPrincipal User user)
     {
@@ -112,7 +112,7 @@ public class AskingServiceController {
             summary = ""
     )
     @GetMapping("public/askingservices/{id}/proposal")
-    public ResponseEntity getAskingPropoal(@PathVariable int id)
+    public ResponseEntity getAskingPropoSal(@PathVariable int id)
     {
         return ResponseEntity.ok(proposalAssembler.toModel(service.getProposalByAskingId(id)));
     }
@@ -132,7 +132,7 @@ public class AskingServiceController {
             }
     )
     @PreAuthorize("hasRole('CLIENT')")
-    @DeleteMapping("/public/askingservices/{id}")
+    @DeleteMapping("/askingservices/{id}")
     public ResponseEntity deleteServiceAsking(@PathVariable int id){
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

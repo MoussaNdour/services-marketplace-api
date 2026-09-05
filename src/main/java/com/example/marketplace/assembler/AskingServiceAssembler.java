@@ -27,7 +27,7 @@ public class AskingServiceAssembler implements RepresentationModelAssembler<Aski
                 WebMvcLinkBuilder.linkTo(
                         WebMvcLinkBuilder.methodOn(
                                 AskingServiceController.class
-                        ).getAskingPropoal(entity.getId())
+                        ).getAskingPropoSal(entity.getId())
                 ).withRel("proposal")
         );
     }

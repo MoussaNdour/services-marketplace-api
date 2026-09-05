@@ -1,12 +1,15 @@
 package com.example.marketplace.controller;
 
+import com.example.marketplace.assembler.AskingServiceAssembler;
+import com.example.marketplace.dto.response.AskingResponseDTO;
 import com.example.marketplace.dto.response.ServiceResponseDTO;
 import com.example.marketplace.entity.User;
 import com.example.marketplace.service.interfaces.ProviderServiceInterface;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,7 +24,10 @@ public class ProviderController {
 
     ProviderServiceInterface service;
 
-    public ProviderController(ProviderServiceInterface service) {
+    AskingServiceAssembler askingServiceAssembler;
+
+    public ProviderController(AskingServiceAssembler askingServiceAssembler, ProviderServiceInterface service) {
+        this.askingServiceAssembler = askingServiceAssembler;
         this.service = service;
     }
 
@@ -90,6 +96,18 @@ public class ProviderController {
     @GetMapping("/providers/services")
     public ResponseEntity<List<ServiceResponseDTO>> getServicesByProvider(@AuthenticationPrincipal User user){
         return ResponseEntity.ok(service.getAllServicesByProvider(user.getEmail()));
+    }
+
+    @Operation(
+            summary = "Allow clients to see all services provided by provider",
+            security = { @SecurityRequirement(name = "bearerAuth") },
+            description = ""
+    )
+    @PreAuthorize("hasRole('PROVIDER')")
+    @GetMapping("/providers/me/askings")
+    public ResponseEntity<CollectionModel<EntityModel<AskingResponseDTO>>> getProviderAskings(@AuthenticationPrincipal User provider)
+    {
+        return ResponseEntity.ok(askingServiceAssembler.toCollectionModel(service.getProviderAskings(provider)));
     }
 
 }

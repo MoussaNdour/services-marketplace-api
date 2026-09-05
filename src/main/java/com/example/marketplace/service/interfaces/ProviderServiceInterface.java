@@ -1,6 +1,7 @@
 package com.example.marketplace.service.interfaces;
 
 import com.example.marketplace.dto.request.ProviderRequestDTO;
+import com.example.marketplace.dto.response.AskingResponseDTO;
 import com.example.marketplace.dto.response.ProviderResponseDTO;
 import com.example.marketplace.dto.response.ServiceResponseDTO;
 import com.example.marketplace.entity.Service;
@@ -13,5 +14,6 @@ public interface ProviderServiceInterface extends GeneralInterface<ProviderReque
     void disableAccount(String email);
     ProviderResponseDTO getByEmail(String email);
     List<ServiceResponseDTO> getAllServicesByProvider(String email);
+    List<AskingResponseDTO> getProviderAskings(User provider);
 
 }
