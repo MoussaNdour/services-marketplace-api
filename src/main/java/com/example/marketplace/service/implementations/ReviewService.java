@@ -5,16 +5,22 @@ import com.example.marketplace.dto.request.ReviewUpdateDTO;
 import com.example.marketplace.dto.response.ReviewResponseDTO;
 import com.example.marketplace.entity.Asking;
 import com.example.marketplace.entity.Review;
+import com.example.marketplace.entity.User;
 import com.example.marketplace.exception.AskingServiceNotFoundException;
+import com.example.marketplace.exception.DuplicateReviewException;
+import com.example.marketplace.exception.ReviewNotAllowedException;
 import com.example.marketplace.exception.ReviewNotFoundException;
 import com.example.marketplace.mapper.request.ReviewRequestMapper;
 import com.example.marketplace.mapper.response.ReviewResponseMapper;
 import com.example.marketplace.repository.AskingRepository;
 import com.example.marketplace.repository.ReviewRepository;
 import com.example.marketplace.service.interfaces.ReviewServiceInterface;
+import com.example.marketplace.type.AskingStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
@@ -41,16 +47,29 @@ class ReviewService implements ReviewServiceInterface {
 
     @Override
     public ReviewResponseDTO save(ReviewRequestDTO dto) {
+        User client = (User)auth.getPrincipal();
+
         Asking asking = askingRepository.findById(dto.getAskingserviceId()).orElseThrow(
                 ()->new AskingServiceNotFoundException("AskingService not found with this id")
         );
 
+        if(!asking.getClient().getUser().getEmail().equals(client.getEmail()))
+            throw new AccessDeniedException("You are not allowed to review this service");
+
+
+        if(!asking.getStatus().equals(AskingStatus.COMPLETED.name()))
+        {
+            throw new ReviewNotAllowedException("You're not allowed to review a service not yet finished");
+        }
+
+        if (repository.existsByAskingservice(asking)) {
+            throw new DuplicateReviewException("You have already reviewed this service");
+        }
+
         Review review = requestMapper.toEntity(dto);
         review.setAskingservice(asking);
 
-        repository.save(review);
-
-        return responseMapper.toDto(review);
+        return responseMapper.toDto(repository.save(review));
     }
 
     @Override

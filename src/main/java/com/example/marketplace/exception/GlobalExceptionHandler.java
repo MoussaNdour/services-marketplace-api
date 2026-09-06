@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -117,6 +116,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateAskingException.class)
     public ResponseEntity<String> handleDuplicatedAskingException(DuplicateAskingException e)
+    {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(ReviewNotAllowedException.class)
+    public ResponseEntity<String> handleReviewNotAllowedException(RefreshTokenException e)
+    {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateReviewException.class)
+    public ResponseEntity<String> handleDuplicationReviewException(DuplicateAskingException e)
     {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
