@@ -18,6 +18,6 @@ public interface AskingServiceRequestMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "client", ignore = true)
     @Mapping(target = "proposal", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "createdat", ignore = true)
     void updateEntityFromDto(AskingUpdateDTO dto, @MappingTarget Asking asking);
 }

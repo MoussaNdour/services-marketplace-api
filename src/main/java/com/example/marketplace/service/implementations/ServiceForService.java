@@ -150,5 +150,17 @@ public class ServiceForService implements ServiceForServiceInterface {
             throw new CategoryNotFoundException("Categoryt not found for this service");
     }
 
+    @Override
+    public List<ServiceResponseDTO> getServicesByCategory(Integer categoryId) {
+        List<ServiceResponseDTO> services = new ArrayList<>();
+
+        for(com.example.marketplace.entity.Service service:repos.findByCategoryId(categoryId))
+        {
+            services.add(responseMapper.toDTO(service));
+        }
+
+        return services;
+    }
+
 
 }

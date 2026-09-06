@@ -22,4 +22,6 @@ public interface ServiceRepository extends JpaRepository<Service,Integer> {
     Optional<Service> getByProposalId(@Param("proposalId") int proposalId);
 
     Optional<Service> findByName(String name);
+
+    List<Service> findByCategoryId(int categoryId);
 }

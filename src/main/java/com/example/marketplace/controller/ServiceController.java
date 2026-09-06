@@ -42,9 +42,13 @@ public class ServiceController {
             }
     )
     @GetMapping("/public/services")
-    public ResponseEntity getAllServices(@RequestParam(required = false) String name){
+    public ResponseEntity getAllServices(@RequestParam(required = false) String name, @RequestParam(required = false) Integer idcategory){
         if (name != null && !name.isEmpty()){
             return ResponseEntity.ok(assembler.toCollectionModel(service.searchService(name)));
+        }
+        else if(idcategory!=null)
+        {
+            return ResponseEntity.ok(assembler.toCollectionModel(service.getServicesByCategory(idcategory)));
         }
         return ResponseEntity.ok(assembler.toCollectionModel(service.getAll()));
     }

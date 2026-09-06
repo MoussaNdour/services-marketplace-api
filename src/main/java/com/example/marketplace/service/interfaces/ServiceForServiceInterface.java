@@ -18,4 +18,6 @@ public interface ServiceForServiceInterface extends GeneralInterface<ServiceRequ
     boolean findServiceByName(String name);
 
     CategoryResponseDTO getServiceCategory(int id);
+
+    List<ServiceResponseDTO> getServicesByCategory(Integer categoryId);
 }
